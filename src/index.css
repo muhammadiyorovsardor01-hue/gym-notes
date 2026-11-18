@@ -1,27 +1,44 @@
 @import "tailwindcss";
 
 @layer base {
+  :root {
+    --bg-main: #090a0f;
+    --bg-card: #12141c;
+    --bg-surface: #181b26;
+    --border-subtle: #222636;
+    --border-focus: #10b981;
+    --accent-emerald: #10b981;
+    --accent-cyan: #06b6d4;
+  }
+
   body {
-    background-color: #0a0a0c;
-    color: #f3f4f6;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background-color: var(--bg-main);
+    color: #e2e8f0;
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', Roboto, sans-serif;
     user-select: none;
     -webkit-tap-highlight-color: transparent;
+    letter-spacing: -0.01em;
   }
 }
 
-/* Custom scrollbar for clean gym UI */
+/* Tabular digits for gym weights and reps */
+.font-mono-numbers {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-feature-settings: "tnum" 1, "zero" 1;
+}
+
+/* Custom sleek scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 ::-webkit-scrollbar-track {
-  background: #111116;
+  background: #090a0f;
 }
 ::-webkit-scrollbar-thumb {
-  background: #27272a;
+  background: #222636;
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #3f3f46;
+  background: #32374d;
 }

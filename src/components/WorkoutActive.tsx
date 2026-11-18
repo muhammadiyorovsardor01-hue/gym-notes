@@ -1,15 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import type { WorkoutSession, ExerciseSet, ExerciseItem } from '../types';
 import { 
-  Play, 
-  Check, 
-  Trash2, 
-  Plus, 
-  Info, 
-  Timer, 
-  Flame, 
-  Dumbbell, 
-  Minus
+  Play, Check, Trash2, Plus, Info, Timer, Flame, Dumbbell, Minus
 } from 'lucide-react';
 
 interface WorkoutActiveProps {
@@ -37,18 +29,10 @@ export const WorkoutActive: React.FC<WorkoutActiveProps> = ({
 }) => {
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
 
-  // Timer logic for workout duration
   useEffect(() => {
-    if (!workout) {
-      setElapsedSeconds(0);
-      return;
-    }
-
+    if (!workout) { setElapsedSeconds(0); return; }
     const start = workout.startTime;
-    const updateElapsed = () => {
-      setElapsedSeconds(Math.max(0, Math.floor((Date.now() - start) / 1000)));
-    };
-
+    const updateElapsed = () => setElapsedSeconds(Math.max(0, Math.floor((Date.now() - start) / 1000)));
     updateElapsed();
     const interval = setInterval(updateElapsed, 1000);
     return () => clearInterval(interval);
@@ -56,22 +40,21 @@ export const WorkoutActive: React.FC<WorkoutActiveProps> = ({
 
   if (!workout) {
     return (
-      <div className="py-12 sm:py-20 flex flex-col items-center justify-center text-center px-4 max-w-md mx-auto">
-        <div className="w-20 h-20 rounded-3xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center mb-6 shadow-xl shadow-emerald-500/5">
-          <Dumbbell size={40} className="transform -rotate-45" />
+      <div className="py-16 flex flex-col items-center justify-center text-center px-6 max-w-sm mx-auto">
+        <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center mb-5">
+          <Dumbbell size={32} className="transform -rotate-45" />
         </div>
-        <h2 className="text-2xl sm:text-3xl font-extrabold text-white mb-2">
-          Mashg'ulotni boshlaymizmi?
+        <h2 className="text-xl font-bold text-white mb-1.5">
+          Mashg'ulotni boshlash
         </h2>
-        <p className="text-sm text-neutral-400 mb-8 max-w-xs">
-          Mashqlarni belgilang, toshlar vazni va takrorlarni qayd etib boring. Har bir yutuq saqlanadi!
+        <p className="text-sm text-slate-500 mb-6 leading-relaxed">
+          Mashqlarni tanlang, vaznlarni yozing va natijalaringizni kuzatib boring.
         </p>
-
         <button
           onClick={onStartNewWorkout}
-          className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-black font-bold text-base flex items-center justify-center gap-2.5 shadow-lg shadow-emerald-500/20 transition-all transform active:scale-95"
+          className="w-full py-3.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black font-bold text-sm flex items-center justify-center gap-2 transition-colors active:scale-[0.98]"
         >
-          <Play size={20} className="fill-black" /> Mashg'ulotni boshlash
+          <Play size={18} className="fill-black" /> Boshlash
         </button>
       </div>
     );
@@ -81,325 +64,195 @@ export const WorkoutActive: React.FC<WorkoutActiveProps> = ({
     const hrs = Math.floor(totalSecs / 3600);
     const mins = Math.floor((totalSecs % 3600) / 60);
     const secs = totalSecs % 60;
-    if (hrs > 0) {
-      return `${hrs}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-    }
+    if (hrs > 0) return `${hrs}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
-  // Add a new set to an exercise
-  const handleAddSet = (exerciseIndex: number) => {
+  const handleAddSet = (exIdx: number) => {
     const updated = { ...workout };
-    const we = updated.exercises[exerciseIndex];
-    const lastSet = we.sets[we.sets.length - 1];
-
-    const newSet: ExerciseSet = {
+    const we = updated.exercises[exIdx];
+    const last = we.sets[we.sets.length - 1];
+    we.sets.push({
       id: `set-${Date.now()}-${Math.random()}`,
       setNumber: we.sets.length + 1,
-      weight: lastSet ? lastSet.weight : 20,
-      reps: lastSet ? lastSet.reps : 10,
+      weight: last ? last.weight : 20,
+      reps: last ? last.reps : 10,
       completed: false,
       type: 'regular',
-    };
-
-    we.sets.push(newSet);
-    onUpdateWorkout(updated);
-  };
-
-  // Remove set
-  const handleRemoveSet = (exerciseIndex: number, setIndex: number) => {
-    const updated = { ...workout };
-    const we = updated.exercises[exerciseIndex];
-    we.sets.splice(setIndex, 1);
-    // re-number remaining sets
-    we.sets.forEach((s, idx) => {
-      s.setNumber = idx + 1;
     });
     onUpdateWorkout(updated);
   };
 
-  // Update set details (weight, reps, completed)
-  const handleUpdateSet = (
-    exerciseIndex: number,
-    setIndex: number,
-    field: keyof ExerciseSet,
-    value: unknown
-  ) => {
+  const handleRemoveSet = (exIdx: number, setIdx: number) => {
     const updated = { ...workout };
-    const targetSet = updated.exercises[exerciseIndex].sets[setIndex];
-    
-    // If completing the set, trigger the rest timer
-    if (field === 'completed' && value === true && !targetSet.completed) {
-      onTriggerRestTimer();
-    }
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (targetSet as any)[field] = value;
+    updated.exercises[exIdx].sets.splice(setIdx, 1);
+    updated.exercises[exIdx].sets.forEach((s, i) => { s.setNumber = i + 1; });
     onUpdateWorkout(updated);
   };
 
-  // Adjust numeric value with quick + / - buttons
-  const handleAdjustValue = (
-    exerciseIndex: number,
-    setIndex: number,
-    field: 'weight' | 'reps',
-    delta: number
-  ) => {
-    const currentVal = workout.exercises[exerciseIndex].sets[setIndex][field] || 0;
-    const newVal = Math.max(0, currentVal + delta);
-    handleUpdateSet(exerciseIndex, setIndex, field, newVal);
+  const handleUpdateSet = (exIdx: number, setIdx: number, field: keyof ExerciseSet, value: unknown) => {
+    const updated = { ...workout };
+    const target = updated.exercises[exIdx].sets[setIdx];
+    if (field === 'completed' && value === true && !target.completed) onTriggerRestTimer();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (target as any)[field] = value;
+    onUpdateWorkout(updated);
   };
 
-  // Remove an exercise from the current workout
-  const handleRemoveExercise = (exerciseIndex: number) => {
-    if (confirm("Ushbu mashqni mashg'ulotdan olib tashlamoqchimisiz?")) {
+  const handleAdjust = (exIdx: number, setIdx: number, field: 'weight' | 'reps', delta: number) => {
+    const cur = workout.exercises[exIdx].sets[setIdx][field] || 0;
+    handleUpdateSet(exIdx, setIdx, field, Math.max(0, cur + delta));
+  };
+
+  const handleRemoveExercise = (exIdx: number) => {
+    if (confirm("Mashqni olib tashlamoqchimisiz?")) {
       const updated = { ...workout };
-      updated.exercises.splice(exerciseIndex, 1);
+      updated.exercises.splice(exIdx, 1);
       onUpdateWorkout(updated);
     }
   };
 
-  // Total volume calculation
   let totalVolume = 0;
   let totalSetsCount = 0;
-  workout.exercises.forEach((we) => {
-    we.sets.forEach((s) => {
-      if (s.completed) {
-        totalVolume += (s.weight || 0) * (s.reps || 0);
-        totalSetsCount += 1;
-      }
-    });
-  });
+  workout.exercises.forEach(we => we.sets.forEach(s => {
+    if (s.completed) { totalVolume += (s.weight || 0) * (s.reps || 0); totalSetsCount++; }
+  }));
 
   return (
-    <div className="space-y-6 pb-28">
-      {/* Active Workout Header Bar */}
-      <div className="bg-neutral-900/90 border border-neutral-800 rounded-2xl p-4 sm:p-5 sticky top-3 z-20 backdrop-blur-md shadow-xl flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <input
-            type="text"
-            value={workout.title}
-            onChange={(e) => onUpdateWorkout({ ...workout, title: e.target.value })}
-            className="text-lg sm:text-xl font-extrabold text-white bg-transparent border-b border-transparent hover:border-neutral-700 focus:border-emerald-500 focus:outline-none transition-colors"
-          />
-          <div className="flex items-center gap-4 text-xs text-neutral-400 mt-1">
-            <span className="flex items-center gap-1.5 font-mono text-emerald-400 font-semibold">
-              <Timer size={14} /> {formatDuration(elapsedSeconds)}
-            </span>
-            <span className="flex items-center gap-1">
-              <Flame size={14} className="text-amber-500" /> {totalVolume.toLocaleString()} kg yuk
-            </span>
-            <span>{totalSetsCount} set bajarildi</span>
+    <div className="space-y-4 pb-24">
+      {/* Header bar */}
+      <div className="bg-[#12141c] border border-[#222636] rounded-xl p-4 sticky top-14 z-20 backdrop-blur-md">
+        <div className="flex items-center justify-between">
+          <div>
+            <input
+              type="text"
+              value={workout.title}
+              onChange={(e) => onUpdateWorkout({ ...workout, title: e.target.value })}
+              className="text-base font-bold text-white bg-transparent border-none focus:outline-none w-full"
+            />
+            <div className="flex items-center gap-4 text-[11px] text-slate-500 mt-1 font-mono-numbers">
+              <span className="text-emerald-400 font-semibold flex items-center gap-1">
+                <Timer size={12} /> {formatDuration(elapsedSeconds)}
+              </span>
+              <span className="flex items-center gap-1">
+                <Flame size={12} className="text-amber-500" /> {totalVolume.toLocaleString()} kg
+              </span>
+              <span>{totalSetsCount} set</span>
+            </div>
           </div>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <button
-            onClick={onCancelWorkout}
-            className="px-3 py-2 rounded-xl text-neutral-400 hover:text-red-400 hover:bg-red-500/10 text-xs font-semibold transition-colors"
-          >
-            Bekor qilish
-          </button>
-          <button
-            onClick={onFinishWorkout}
-            className="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black font-bold text-xs shadow-md shadow-emerald-500/20 transition-all flex items-center gap-1.5"
-          >
-            <Check size={16} /> Yakunlash
-          </button>
+          <div className="flex items-center gap-2">
+            <button onClick={onCancelWorkout} className="px-3 py-1.5 rounded-lg text-slate-500 hover:text-red-400 text-[11px] font-semibold">
+              Bekor
+            </button>
+            <button onClick={onFinishWorkout} className="px-4 py-2 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-black font-bold text-[11px] flex items-center gap-1">
+              <Check size={14} /> Yakunlash
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* Exercises in current workout */}
+      {/* Exercises */}
       {workout.exercises.length === 0 ? (
-        <div className="p-8 border-2 border-dashed border-neutral-800 rounded-2xl text-center space-y-4">
-          <p className="text-sm text-neutral-400">
-            Hozircha hech qanday mashq qo'shilmagan.
-          </p>
-          <button
-            onClick={onOpenExerciseSelector}
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20 text-xs font-bold transition-all"
-          >
-            <Plus size={16} /> Birinchi mashqni qo'shish
+        <div className="p-8 border border-dashed border-[#222636] rounded-xl text-center space-y-3">
+          <p className="text-sm text-slate-500">Mashq qo'shilmagan.</p>
+          <button onClick={onOpenExerciseSelector} className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-500/10 text-emerald-400 text-xs font-semibold">
+            <Plus size={14} /> Mashq qo'shish
           </button>
         </div>
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-3">
           {workout.exercises.map((we, exIdx) => {
             const pr = previousRecords[we.exerciseId];
-
             return (
-              <div
-                key={we.id}
-                className="bg-neutral-900 border border-neutral-800/90 rounded-2xl p-4 sm:p-5 shadow-lg space-y-4"
-              >
-                {/* Exercise Header */}
+              <div key={we.id} className="bg-[#12141c] border border-[#222636] rounded-xl p-4 space-y-3">
+                {/* Exercise header */}
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
-                    <div className="flex items-center gap-2">
-                      <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-neutral-800 text-neutral-400">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-[#181b26] text-slate-500">
                         {we.exercise.muscleGroup}
                       </span>
                       {pr && (
-                        <span className="text-[10px] font-semibold px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20">
-                          🏆 Rekord: {pr.maxWeight} kg
+                        <span className="text-[9px] font-semibold px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-400">
+                          PR: {pr.maxWeight} kg
                         </span>
                       )}
                     </div>
-                    <h3 className="text-base sm:text-lg font-bold text-white mt-1">
-                      {we.exercise.nameUz}
-                    </h3>
+                    <h3 className="text-sm font-bold text-white">{we.exercise.nameUz}</h3>
                   </div>
-
-                  <div className="flex items-center gap-1.5">
-                    {/* View Technique Button */}
-                    <button
-                      onClick={() => onOpenTechnique(we.exercise)}
-                      className="px-2.5 py-1.5 rounded-lg bg-neutral-800 hover:bg-neutral-700 text-neutral-300 hover:text-emerald-400 text-xs font-medium flex items-center gap-1.5 transition-colors"
-                      title="To'g'ri texnika va videoni ko'rish"
-                    >
+                  <div className="flex items-center gap-1">
+                    <button onClick={() => onOpenTechnique(we.exercise)} className="p-1.5 rounded-lg text-slate-500 hover:text-emerald-400 hover:bg-white/5" title="Texnika">
                       <Info size={15} />
-                      <span className="hidden sm:inline">Texnika</span>
                     </button>
-                    {/* Delete exercise */}
-                    <button
-                      onClick={() => handleRemoveExercise(exIdx)}
-                      className="p-1.5 rounded-lg text-neutral-500 hover:text-red-400 hover:bg-neutral-800 transition-colors"
-                      title="Mashqni olib tashlash"
-                    >
-                      <Trash2 size={16} />
+                    <button onClick={() => handleRemoveExercise(exIdx)} className="p-1.5 rounded-lg text-slate-600 hover:text-red-400 hover:bg-white/5">
+                      <Trash2 size={14} />
                     </button>
                   </div>
                 </div>
 
-                {/* Sets Table */}
-                <div className="overflow-x-auto">
-                  <table className="w-full text-left text-xs">
-                    <thead>
-                      <tr className="text-neutral-500 font-semibold border-b border-neutral-800/80">
-                        <th className="py-2 px-1 text-center w-10">SET</th>
-                        <th className="py-2 px-2 text-center">TOSH (KG)</th>
-                        <th className="py-2 px-2 text-center">TAKROR</th>
-                        <th className="py-2 px-2 text-center w-14">BAJARILDI</th>
-                        <th className="py-2 px-1 text-center w-8"></th>
+                {/* Sets */}
+                <table className="w-full text-[11px]">
+                  <thead>
+                    <tr className="text-slate-600 font-semibold">
+                      <th className="py-1.5 text-center w-8">SET</th>
+                      <th className="py-1.5 text-center">KG</th>
+                      <th className="py-1.5 text-center">REPS</th>
+                      <th className="py-1.5 text-center w-12">✓</th>
+                      <th className="py-1.5 w-6"></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {we.sets.map((set, setIdx) => (
+                      <tr key={set.id} className={set.completed ? 'bg-emerald-500/5' : ''}>
+                        <td className="py-2 text-center font-bold text-slate-500 font-mono-numbers">{set.setNumber}</td>
+                        <td className="py-2 px-1">
+                          <div className="flex items-center justify-center gap-0.5">
+                            <button onClick={() => handleAdjust(exIdx, setIdx, 'weight', -2.5)} className="w-6 h-7 rounded bg-[#181b26] hover:bg-[#1f2330] text-slate-500 flex items-center justify-center">
+                              <Minus size={10} />
+                            </button>
+                            <input type="number" step="0.5" value={set.weight === 0 ? '' : set.weight} placeholder="0"
+                              onChange={(e) => handleUpdateSet(exIdx, setIdx, 'weight', parseFloat(e.target.value) || 0)}
+                              className="w-14 py-1.5 text-center font-mono-numbers font-bold bg-[#181b26] border border-[#222636] rounded-md text-white text-xs focus:outline-none focus:border-emerald-500"
+                            />
+                            <button onClick={() => handleAdjust(exIdx, setIdx, 'weight', 2.5)} className="w-6 h-7 rounded bg-[#181b26] hover:bg-[#1f2330] text-slate-500 flex items-center justify-center">
+                              <Plus size={10} />
+                            </button>
+                          </div>
+                        </td>
+                        <td className="py-2 px-1">
+                          <div className="flex items-center justify-center gap-0.5">
+                            <button onClick={() => handleAdjust(exIdx, setIdx, 'reps', -1)} className="w-6 h-7 rounded bg-[#181b26] hover:bg-[#1f2330] text-slate-500 flex items-center justify-center">
+                              <Minus size={10} />
+                            </button>
+                            <input type="number" value={set.reps === 0 ? '' : set.reps} placeholder="0"
+                              onChange={(e) => handleUpdateSet(exIdx, setIdx, 'reps', parseInt(e.target.value, 10) || 0)}
+                              className="w-12 py-1.5 text-center font-mono-numbers font-bold bg-[#181b26] border border-[#222636] rounded-md text-white text-xs focus:outline-none focus:border-emerald-500"
+                            />
+                            <button onClick={() => handleAdjust(exIdx, setIdx, 'reps', 1)} className="w-6 h-7 rounded bg-[#181b26] hover:bg-[#1f2330] text-slate-500 flex items-center justify-center">
+                              <Plus size={10} />
+                            </button>
+                          </div>
+                        </td>
+                        <td className="py-2 text-center">
+                          <button onClick={() => handleUpdateSet(exIdx, setIdx, 'completed', !set.completed)}
+                            className={`w-8 h-8 rounded-lg flex items-center justify-center mx-auto transition-all ${
+                              set.completed ? 'bg-emerald-500 text-black' : 'bg-[#181b26] text-slate-600 hover:text-slate-300'
+                            }`}>
+                            <Check size={16} strokeWidth={set.completed ? 3 : 1.5} />
+                          </button>
+                        </td>
+                        <td className="py-2 text-center">
+                          <button onClick={() => handleRemoveSet(exIdx, setIdx)} className="text-slate-700 hover:text-red-400 p-0.5">
+                            <Trash2 size={12} />
+                          </button>
+                        </td>
                       </tr>
-                    </thead>
-                    <tbody className="divide-y divide-neutral-800/50">
-                      {we.sets.map((set, setIdx) => (
-                        <tr 
-                          key={set.id}
-                          className={`transition-colors ${
-                            set.completed ? 'bg-emerald-500/5' : 'hover:bg-neutral-800/30'
-                          }`}
-                        >
-                          {/* Set number */}
-                          <td className="py-3 px-1 text-center font-bold text-neutral-400">
-                            {set.setNumber}
-                          </td>
+                    ))}
+                  </tbody>
+                </table>
 
-                          {/* Weight input with steppers */}
-                          <td className="py-3 px-2">
-                            <div className="flex items-center justify-center gap-1">
-                              <button
-                                onClick={() => handleAdjustValue(exIdx, setIdx, 'weight', -2.5)}
-                                className="w-6 h-6 rounded bg-neutral-800 hover:bg-neutral-700 text-neutral-400 flex items-center justify-center"
-                              >
-                                <Minus size={11} />
-                              </button>
-                              <input
-                                type="number"
-                                step="0.5"
-                                value={set.weight === 0 ? '' : set.weight}
-                                placeholder="0"
-                                onChange={(e) =>
-                                  handleUpdateSet(
-                                    exIdx,
-                                    setIdx,
-                                    'weight',
-                                    parseFloat(e.target.value) || 0
-                                  )
-                                }
-                                className="w-14 sm:w-16 py-1 text-center font-mono font-bold bg-neutral-800/90 border border-neutral-700/60 rounded-lg text-white focus:outline-none focus:border-emerald-500 text-sm"
-                              />
-                              <button
-                                onClick={() => handleAdjustValue(exIdx, setIdx, 'weight', 2.5)}
-                                className="w-6 h-6 rounded bg-neutral-800 hover:bg-neutral-700 text-neutral-400 flex items-center justify-center"
-                              >
-                                <Plus size={11} />
-                              </button>
-                            </div>
-                          </td>
-
-                          {/* Reps input with steppers */}
-                          <td className="py-3 px-2">
-                            <div className="flex items-center justify-center gap-1">
-                              <button
-                                onClick={() => handleAdjustValue(exIdx, setIdx, 'reps', -1)}
-                                className="w-6 h-6 rounded bg-neutral-800 hover:bg-neutral-700 text-neutral-400 flex items-center justify-center"
-                              >
-                                <Minus size={11} />
-                              </button>
-                              <input
-                                type="number"
-                                value={set.reps === 0 ? '' : set.reps}
-                                placeholder="0"
-                                onChange={(e) =>
-                                  handleUpdateSet(
-                                    exIdx,
-                                    setIdx,
-                                    'reps',
-                                    parseInt(e.target.value, 10) || 0
-                                  )
-                                }
-                                className="w-12 sm:w-14 py-1 text-center font-mono font-bold bg-neutral-800/90 border border-neutral-700/60 rounded-lg text-white focus:outline-none focus:border-emerald-500 text-sm"
-                              />
-                              <button
-                                onClick={() => handleAdjustValue(exIdx, setIdx, 'reps', 1)}
-                                className="w-6 h-6 rounded bg-neutral-800 hover:bg-neutral-700 text-neutral-400 flex items-center justify-center"
-                              >
-                                <Plus size={11} />
-                              </button>
-                            </div>
-                          </td>
-
-                          {/* Checkbox button */}
-                          <td className="py-3 px-2 text-center">
-                            <button
-                              onClick={() =>
-                                handleUpdateSet(exIdx, setIdx, 'completed', !set.completed)
-                              }
-                              className={`w-9 h-9 rounded-xl flex items-center justify-center mx-auto transition-all ${
-                                set.completed
-                                  ? 'bg-emerald-500 text-black shadow-lg shadow-emerald-500/20 scale-105'
-                                  : 'bg-neutral-800 text-neutral-500 hover:text-neutral-300 hover:bg-neutral-700'
-                              }`}
-                              title={set.completed ? "Bajarildi deb belgilangan" : "Bajarildi deb belgilash"}
-                            >
-                              <Check size={18} className={set.completed ? 'stroke-[3]' : ''} />
-                            </button>
-                          </td>
-
-                          {/* Remove set */}
-                          <td className="py-3 px-1 text-center">
-                            <button
-                              onClick={() => handleRemoveSet(exIdx, setIdx)}
-                              className="text-neutral-600 hover:text-red-400 p-1 transition-colors"
-                              title="Setni o'chirish"
-                            >
-                              <Trash2 size={14} />
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-
-                {/* Add set button */}
-                <button
-                  onClick={() => handleAddSet(exIdx)}
-                  className="w-full py-2 rounded-xl bg-neutral-800/70 hover:bg-neutral-800 text-neutral-300 hover:text-white font-semibold text-xs flex items-center justify-center gap-1.5 transition-colors border border-neutral-800"
-                >
-                  <Plus size={14} /> Yangi set qo'shish
+                <button onClick={() => handleAddSet(exIdx)} className="w-full py-2 rounded-lg bg-[#181b26] hover:bg-[#1f2330] text-slate-400 text-[11px] font-semibold flex items-center justify-center gap-1 transition-colors">
+                  <Plus size={12} /> Set qo'shish
                 </button>
               </div>
             );
@@ -407,12 +260,8 @@ export const WorkoutActive: React.FC<WorkoutActiveProps> = ({
         </div>
       )}
 
-      {/* Add more exercises button */}
-      <button
-        onClick={onOpenExerciseSelector}
-        className="w-full py-3.5 rounded-2xl bg-neutral-800/80 hover:bg-neutral-800 text-emerald-400 hover:text-emerald-300 font-bold text-sm border border-neutral-700/60 flex items-center justify-center gap-2 transition-all shadow-sm"
-      >
-        <Plus size={18} /> Yana mashq qo'shish
+      <button onClick={onOpenExerciseSelector} className="w-full py-3 rounded-xl border border-dashed border-[#222636] hover:border-emerald-500/40 text-emerald-400 font-semibold text-xs flex items-center justify-center gap-2 transition-colors">
+        <Plus size={16} /> Mashq qo'shish
       </button>
     </div>
   );

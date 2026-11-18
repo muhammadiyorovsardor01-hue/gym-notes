@@ -13,27 +13,18 @@ interface ExerciseSelectorModalProps {
 }
 
 export const ExerciseSelectorModal: React.FC<ExerciseSelectorModalProps> = ({
-  isOpen,
-  onClose,
-  exercises,
-  onSelectExercise,
-  onOpenTechnique,
-  onAddNewCustomExercise,
+  isOpen, onClose, exercises, onSelectExercise, onOpenTechnique, onAddNewCustomExercise,
 }) => {
   const [search, setSearch] = useState('');
   const [selectedGroup, setSelectedGroup] = useState<string>('all');
   const [showCreateModal, setShowCreateModal] = useState(false);
-
-  // New Custom Exercise form state
   const [customName, setCustomName] = useState('');
   const [customGroup, setCustomGroup] = useState<MuscleGroup>('chest');
 
   if (!isOpen) return null;
 
   const filteredExercises = exercises.filter((ex) => {
-    const matchesSearch =
-      ex.nameUz.toLowerCase().includes(search.toLowerCase()) ||
-      ex.name.toLowerCase().includes(search.toLowerCase());
+    const matchesSearch = ex.nameUz.toLowerCase().includes(search.toLowerCase()) || ex.name.toLowerCase().includes(search.toLowerCase());
     const matchesGroup = selectedGroup === 'all' || ex.muscleGroup === selectedGroup;
     return matchesSearch && matchesGroup;
   });
@@ -41,18 +32,13 @@ export const ExerciseSelectorModal: React.FC<ExerciseSelectorModalProps> = ({
   const handleCreateCustom = (e: React.FormEvent) => {
     e.preventDefault();
     if (!customName.trim()) return;
-
     const newEx: ExerciseItem = {
-      id: `custom-${Date.now()}`,
-      name: customName.trim(),
-      nameUz: customName.trim(),
+      id: `custom-${Date.now()}`, name: customName.trim(), nameUz: customName.trim(),
       muscleGroup: customGroup,
-      cues: ["Ushbu mashqni to'g'ri texnika va nazorat bilan bajaring."],
-      mistakes: ["Kuchsizlantiruvchi og'irliklardan qoching."],
-      youtubeQuery: `${customName.trim()} workout form`,
-      isCustom: true,
+      cues: ["To'g'ri texnika va nazorat bilan bajaring."],
+      mistakes: ["Haddan tashqari og'ir vaznlardan qoching."],
+      youtubeQuery: `${customName.trim()} exercise form`, isCustom: true,
     };
-
     onAddNewCustomExercise(newEx);
     onSelectExercise(newEx);
     setCustomName('');
@@ -61,136 +47,63 @@ export const ExerciseSelectorModal: React.FC<ExerciseSelectorModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/80 backdrop-blur-sm p-0 sm:p-4 animate-in fade-in duration-200">
-      <div 
-        className="w-full max-w-xl bg-neutral-900 border border-neutral-800 rounded-t-3xl sm:rounded-2xl h-[88vh] flex flex-col overflow-hidden shadow-2xl"
-        onClick={(e) => e.stopPropagation()}
-      >
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/85 backdrop-blur-sm p-0 sm:p-4" onClick={onClose}>
+      <div className="w-full max-w-xl bg-[#12141c] border border-[#222636] rounded-t-2xl sm:rounded-2xl h-[85vh] flex flex-col overflow-hidden" onClick={(e) => e.stopPropagation()}>
         {/* Header */}
-        <div className="p-4 sm:p-5 border-b border-neutral-800 flex items-center justify-between bg-neutral-900/90">
-          <div className="flex items-center gap-2.5">
-            <div className="p-2 rounded-xl bg-emerald-500/10 text-emerald-400">
-              <Dumbbell size={20} />
-            </div>
-            <div>
-              <h3 className="text-lg font-bold text-white">Mashq tanlash</h3>
-              <p className="text-xs text-neutral-400">Mashg'ulotga mashq qo'shing</p>
-            </div>
+        <div className="p-4 border-b border-[#222636] flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-400"><Dumbbell size={18} /></div>
+            <h3 className="text-sm font-bold text-white">Mashq tanlash</h3>
           </div>
-          <button
-            onClick={onClose}
-            className="p-2 text-neutral-400 hover:text-white rounded-full bg-neutral-800/60 hover:bg-neutral-800 transition-colors"
-          >
-            <X size={20} />
-          </button>
+          <button onClick={onClose} className="p-1.5 text-slate-500 hover:text-white rounded-lg hover:bg-white/5"><X size={18} /></button>
         </div>
 
-        {/* Search & Action bar */}
-        <div className="p-4 border-b border-neutral-800 space-y-3 bg-neutral-950/40">
+        {/* Search & Filters */}
+        <div className="p-4 border-b border-[#222636] space-y-2">
           <div className="relative">
-            <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-500" />
-            <input
-              type="text"
-              placeholder="Mashq nomini qidiring (masalan: Otjimaniya, Bench...)"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 bg-neutral-800/70 border border-neutral-700/60 rounded-xl text-white placeholder-neutral-500 text-sm focus:outline-none focus:border-emerald-500 transition-colors"
+            <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
+            <input type="text" placeholder="Qidirish..." value={search} onChange={(e) => setSearch(e.target.value)}
+              className="w-full pl-9 pr-4 py-2 bg-[#181b26] border border-[#222636] rounded-lg text-white placeholder-slate-600 text-xs focus:outline-none focus:border-emerald-500"
             />
           </div>
-
-          {/* Muscle Group Filter Pills */}
-          <div className="flex gap-1.5 overflow-x-auto pb-1 no-scrollbar text-xs">
-            <button
-              onClick={() => setSelectedGroup('all')}
-              className={`px-3 py-1.5 rounded-lg whitespace-nowrap font-medium transition-colors ${
-                selectedGroup === 'all'
-                  ? 'bg-emerald-500 text-black font-semibold'
-                  : 'bg-neutral-800/80 text-neutral-300 hover:bg-neutral-800'
-              }`}
-            >
-              Barchasi ({exercises.length})
+          <div className="flex gap-1 overflow-x-auto no-scrollbar text-[10px]">
+            <button onClick={() => setSelectedGroup('all')}
+              className={`px-2.5 py-1 rounded-md whitespace-nowrap font-semibold ${selectedGroup === 'all' ? 'bg-emerald-500 text-black' : 'bg-[#181b26] text-slate-400'}`}>
+              Barchasi
             </button>
-            {MUSCLE_GROUPS.map((grp) => {
-              const count = exercises.filter((x) => x.muscleGroup === grp.key).length;
-              return (
-                <button
-                  key={grp.key}
-                  onClick={() => setSelectedGroup(grp.key)}
-                  className={`px-3 py-1.5 rounded-lg whitespace-nowrap font-medium flex items-center gap-1.5 transition-colors ${
-                    selectedGroup === grp.key
-                      ? 'bg-emerald-500 text-black font-semibold'
-                      : 'bg-neutral-800/80 text-neutral-300 hover:bg-neutral-800'
-                  }`}
-                >
-                  <span>{grp.icon}</span>
-                  <span>{grp.labelUz.split(' ')[0]}</span>
-                  <span className="opacity-60 text-[10px]">({count})</span>
-                </button>
-              );
-            })}
+            {MUSCLE_GROUPS.map((g) => (
+              <button key={g.key} onClick={() => setSelectedGroup(g.key)}
+                className={`px-2.5 py-1 rounded-md whitespace-nowrap font-semibold flex items-center gap-1 ${selectedGroup === g.key ? 'bg-emerald-500 text-black' : 'bg-[#181b26] text-slate-400'}`}>
+                {g.icon} {g.labelUz.split(' ')[0]}
+              </button>
+            ))}
           </div>
         </div>
 
-        {/* Exercise List */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-2">
+        {/* List */}
+        <div className="flex-1 overflow-y-auto p-4 space-y-1.5">
           {filteredExercises.length === 0 ? (
-            <div className="py-12 text-center text-neutral-400 space-y-3">
-              <p className="text-sm">Bunday mashq topilmadi.</p>
-              <button
-                onClick={() => {
-                  setCustomName(search);
-                  setShowCreateModal(true);
-                }}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20 text-xs font-semibold"
-              >
-                <Plus size={16} /> Yangi mashq sifatida qo'shish
+            <div className="py-8 text-center text-slate-500 space-y-2">
+              <p className="text-xs">Topilmadi</p>
+              <button onClick={() => { setCustomName(search); setShowCreateModal(true); }}
+                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-emerald-500/10 text-emerald-400 text-[11px] font-semibold">
+                <Plus size={13} /> Yangi mashq yaratish
               </button>
             </div>
           ) : (
-            filteredExercises.map((exercise) => (
-              <div
-                key={exercise.id}
-                className="group p-3 rounded-xl bg-neutral-800/40 hover:bg-neutral-800/80 border border-neutral-800/70 hover:border-neutral-700 flex items-center justify-between transition-all"
-              >
-                <div 
-                  className="flex-1 cursor-pointer pr-3"
-                  onClick={() => {
-                    onSelectExercise(exercise);
-                    onClose();
-                  }}
-                >
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="text-[10px] font-semibold px-2 py-0.5 rounded bg-neutral-800 text-neutral-400 uppercase tracking-wider">
-                      {exercise.muscleGroup}
-                    </span>
-                    {exercise.isCustom && (
-                      <span className="text-[10px] px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-400">
-                        Custom
-                      </span>
-                    )}
+            filteredExercises.map((ex) => (
+              <div key={ex.id} className="p-2.5 rounded-lg bg-[#181b26] hover:bg-[#1f2330] border border-[#222636] flex items-center justify-between transition-colors group">
+                <div className="flex-1 cursor-pointer pr-2" onClick={() => { onSelectExercise(ex); onClose(); }}>
+                  <div className="flex items-center gap-1.5 mb-0.5">
+                    <span className="text-[8px] font-bold uppercase tracking-wider px-1 py-0.5 rounded bg-[#12141c] text-slate-500">{ex.muscleGroup}</span>
                   </div>
-                  <h4 className="text-sm font-semibold text-white group-hover:text-emerald-400 transition-colors">
-                    {exercise.nameUz}
-                  </h4>
-                  <p className="text-xs text-neutral-400 mt-0.5">{exercise.name}</p>
+                  <h4 className="text-xs font-bold text-white group-hover:text-emerald-400 transition-colors">{ex.nameUz}</h4>
                 </div>
-
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={() => onOpenTechnique(exercise)}
-                    className="p-2 rounded-lg bg-neutral-800 hover:bg-neutral-700 text-neutral-400 hover:text-emerald-400 transition-colors"
-                    title="To'g'ri texnikani ko'rish"
-                  >
-                    <Info size={17} />
-                  </button>
-                  <button
-                    onClick={() => {
-                      onSelectExercise(exercise);
-                      onClose();
-                    }}
-                    className="px-3 py-1.5 rounded-lg bg-emerald-500/10 hover:bg-emerald-500 text-emerald-400 hover:text-black font-semibold text-xs transition-colors flex items-center gap-1"
-                  >
-                    <Plus size={15} /> Qo'shish
+                <div className="flex items-center gap-1">
+                  <button onClick={() => onOpenTechnique(ex)} className="p-1.5 rounded text-slate-600 hover:text-emerald-400"><Info size={14} /></button>
+                  <button onClick={() => { onSelectExercise(ex); onClose(); }}
+                    className="px-2 py-1 rounded-md bg-emerald-500/10 hover:bg-emerald-500 text-emerald-400 hover:text-black font-bold text-[10px] flex items-center gap-0.5 transition-colors">
+                    <Plus size={12} /> Qo'shish
                   </button>
                 </div>
               </div>
@@ -198,72 +111,36 @@ export const ExerciseSelectorModal: React.FC<ExerciseSelectorModalProps> = ({
           )}
         </div>
 
-        {/* Footer: Create Custom Exercise Button */}
-        <div className="p-3 border-t border-neutral-800 bg-neutral-900">
-          <button
-            onClick={() => setShowCreateModal(true)}
-            className="w-full py-2.5 rounded-xl border border-dashed border-neutral-700 hover:border-emerald-500 text-neutral-300 hover:text-emerald-400 text-xs font-semibold flex items-center justify-center gap-2 transition-colors"
-          >
-            <Plus size={16} /> Ro'yxatda yo'q yangi mashq qo'shish
+        <div className="p-3 border-t border-[#222636]">
+          <button onClick={() => setShowCreateModal(true)} className="w-full py-2 rounded-lg border border-dashed border-[#222636] hover:border-emerald-500/40 text-slate-400 hover:text-emerald-400 text-[11px] font-semibold flex items-center justify-center gap-1 transition-colors">
+            <Plus size={13} /> Yangi mashq yaratish
           </button>
         </div>
 
-        {/* Modal for creating custom exercise */}
+        {/* Create Custom Modal */}
         {showCreateModal && (
-          <div className="absolute inset-0 bg-neutral-950/90 z-20 flex flex-col p-5">
-            <div className="flex items-center justify-between pb-3 border-b border-neutral-800 mb-4">
-              <h4 className="font-bold text-white text-base">Yangi maxsus mashq yaratish</h4>
-              <button onClick={() => setShowCreateModal(false)} className="text-neutral-400 hover:text-white">
-                <X size={20} />
-              </button>
+          <div className="absolute inset-0 bg-[#0d0e14]/95 z-20 flex flex-col p-5">
+            <div className="flex items-center justify-between pb-3 border-b border-[#222636] mb-4">
+              <h4 className="font-bold text-white text-sm">Yangi mashq</h4>
+              <button onClick={() => setShowCreateModal(false)} className="text-slate-500 hover:text-white"><X size={18} /></button>
             </div>
-
             <form onSubmit={handleCreateCustom} className="space-y-4">
               <div>
-                <label className="block text-xs font-medium text-neutral-300 mb-1.5">
-                  Mashq nomi *
-                </label>
-                <input
-                  type="text"
-                  required
-                  placeholder="Masalan: Gantel bilan oldinga lunge..."
-                  value={customName}
-                  onChange={(e) => setCustomName(e.target.value)}
-                  className="w-full px-3.5 py-2.5 bg-neutral-800 border border-neutral-700 rounded-xl text-white text-sm focus:outline-none focus:border-emerald-500"
+                <label className="block text-[11px] font-medium text-slate-400 mb-1">Mashq nomi</label>
+                <input type="text" required placeholder="Masalan: Lunge bilan gantel" value={customName} onChange={(e) => setCustomName(e.target.value)}
+                  className="w-full px-3 py-2 bg-[#181b26] border border-[#222636] rounded-lg text-white text-xs focus:outline-none focus:border-emerald-500"
                 />
               </div>
-
               <div>
-                <label className="block text-xs font-medium text-neutral-300 mb-1.5">
-                  Mushak guruhi
-                </label>
-                <select
-                  value={customGroup}
-                  onChange={(e) => setCustomGroup(e.target.value as MuscleGroup)}
-                  className="w-full px-3.5 py-2.5 bg-neutral-800 border border-neutral-700 rounded-xl text-white text-sm focus:outline-none focus:border-emerald-500"
-                >
-                  {MUSCLE_GROUPS.map((g) => (
-                    <option key={g.key} value={g.key}>
-                      {g.labelUz}
-                    </option>
-                  ))}
+                <label className="block text-[11px] font-medium text-slate-400 mb-1">Mushak guruhi</label>
+                <select value={customGroup} onChange={(e) => setCustomGroup(e.target.value as MuscleGroup)}
+                  className="w-full px-3 py-2 bg-[#181b26] border border-[#222636] rounded-lg text-white text-xs focus:outline-none focus:border-emerald-500">
+                  {MUSCLE_GROUPS.map((g) => <option key={g.key} value={g.key}>{g.labelUz}</option>)}
                 </select>
               </div>
-
-              <div className="pt-4 flex gap-2">
-                <button
-                  type="button"
-                  onClick={() => setShowCreateModal(false)}
-                  className="w-1/2 py-2.5 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-neutral-300 text-xs font-semibold"
-                >
-                  Bekor qilish
-                </button>
-                <button
-                  type="submit"
-                  className="w-1/2 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black text-xs font-bold"
-                >
-                  Saqlash va Qo'shish
-                </button>
+              <div className="pt-3 flex gap-2">
+                <button type="button" onClick={() => setShowCreateModal(false)} className="w-1/2 py-2 rounded-lg bg-[#181b26] text-slate-400 text-xs font-semibold">Bekor</button>
+                <button type="submit" className="w-1/2 py-2 rounded-lg bg-emerald-500 text-black text-xs font-bold">Saqlash</button>
               </div>
             </form>
           </div>
