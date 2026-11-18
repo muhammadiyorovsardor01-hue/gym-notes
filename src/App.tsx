@@ -26,6 +26,7 @@ import { RestTimer } from './components/RestTimerModal';
 import { WorkoutSummaryModal } from './components/WorkoutSummaryModal';
 import { ExercisesLibraryView } from './components/ExercisesLibraryView';
 import { HistoryView } from './components/HistoryView';
+import { InstallShortcutBanner } from './components/InstallShortcutBanner';
 
 export function App() {
   const [currentTab, setCurrentTab] = useState<TabType>('workout');
@@ -199,6 +200,8 @@ export function App() {
 
       {/* Main Content Area */}
       <main className="flex-1 max-w-xl w-full mx-auto p-4 sm:p-5">
+        <InstallShortcutBanner />
+
         {currentTab === 'workout' && (
           <WorkoutActive
             workout={activeWorkout}

@@ -18,18 +18,17 @@ export const DEFAULT_EXERCISES: ExerciseItem[] = [
     nameUz: 'Otjimaniya (Push-ups)',
     muscleGroup: 'chest',
     cues: [
-      "Qo'llar yelka kengligidan bir oz kengroq joylashtiriladi.",
-      "Tirsaklarni yon tomonga yoyib yubormang, tanaga nisbatan taxminan 45-60 gradus burchakda tushiring.",
-      "Tana boshdan tovongacha to'g'ri taxtadek (tekis) bo'lishi shart, qorin va dumbani qisib turing.",
-      "Ko'krak deyarli polga tegguncha tushib, so'ng kuch bilan ko'tariling."
+      "Jeff Nippard tavsiyasi: Qo'llarni yelkadan biroz kengroq qo'ying va tirsaklarni tanaga nisbatan 45-60 gradusda ushlang.",
+      "Tana boshdan tovongacha to'g'ri taxtadek (tekis) bo'lishi shart, dumba va qorinni qattiq qising.",
+      "Ko'krak qafasini yerga yaqinlashtirib, ko'krak mushagini to'liq cho'zing va kuch bilan ko'tariling."
     ],
     mistakes: [
-      "Belni pastga osiltirib yuborish (orqa egilishi).",
-      "Boshni haddan tashqari oldinga yoki pastga osiltirish.",
-      "Harakatni to'liq bajarmaslik (yarim tushish)."
+      "Tirsaklarni 90 gradusga yoyib yuborish (bu yelkaga jarohat keltiradi).",
+      "Belni pastga osiltirish yoki dumbani haddan tashqari ko'tarib olish.",
+      "Yarim harakat qilish — to'liq pastga tushib, to'liq ko'tarilish muhim."
     ],
-    youtubeQuery: 'push ups proper form',
-    youtubeId: 'IODxDxX7oi4'
+    youtubeQuery: 'Jeff Nippard push ups proper form technique',
+    youtubeId: 'hxmd2G_qH1g'
   },
   {
     id: 'bench-press',
@@ -37,18 +36,17 @@ export const DEFAULT_EXERCISES: ExerciseItem[] = [
     nameUz: 'Shtanga yotib ko‘tarish (Bench Press)',
     muscleGroup: 'chest',
     cues: [
-      "Skameykaga yotganda yelka kuraklarini (lopatkalarni) orqaga qisib, skameykaga bosing.",
-      "Oyoqlarni erga mahkam tirang (leg drive).",
-      "Shtangani ko'krak o'rtasi (ko'krak uchi) sohasiga nazorat bilan tushiring.",
-      "Tirsaklar 75 gradus atrofida harakatlanishi kerak, 90 gradus qilib yoymang."
+      "Jeff Nippard tavsiyasi: Skameykada yotganda yelka kuraklarini (scapula) orqaga va pastga qisib oling (retraction).",
+      "Oyoqlarni polga mahkam tirab 'leg drive' hosil qiling.",
+      "Shtangani to'g'ri chiziqda emas, pastga tushganda ko'krak uchi sohasiga, ko'tarilayotganda esa yelka tomon biroz qiya (J-curve) yo'nalishda ko'taring."
     ],
     mistakes: [
       "Shtangani ko'krakka urib sakratish (bouncing).",
       "Dumbani skameykadan uzib ko'tarish.",
-      "Tirsaklarni to'liq qotirib (hyper-extend) bo'g'imga og'irlik tushirish."
+      "Tirsaklarni to'liq qotirib bo'g'imga keraksiz yuk tushirish."
     ],
-    youtubeQuery: 'bench press proper form tutorial',
-    youtubeId: 'rT7DgCr-3pg'
+    youtubeQuery: 'Jeff Nippard How To Bench Press with Perfect Technique',
+    youtubeId: 'vcBig73ojpE'
   },
   {
     id: 'incline-dumbbell-press',
@@ -56,15 +54,15 @@ export const DEFAULT_EXERCISES: ExerciseItem[] = [
     nameUz: 'Qiya skameykada gantel ko‘tarish (Incline)',
     muscleGroup: 'chest',
     cues: [
-      "Skameyka qiyaligi 30-45 gradus atrofida bo'lishi maqbul.",
-      "Gantellarni pastga tushirganda ko'krak yuqori qismini yaxshilab cho'zing.",
-      "Tepada gantellarni bir-biriga urishtirmang, mushakda zo'riqishni saqlang."
+      "Jeff Nippard tavsiyasi: Skameyka burchagini 30 gradus atrofida ushlang (eng yuqori ko'krak aktivatsiyasi uchun).",
+      "Gantellarni pastga tushirganda tirsaklar 45-60 gradusda bo'lsin.",
+      "Tepada gantellarni bir-biriga urishtirmang, zo'riqishni saqlang."
     ],
     mistakes: [
-      "Skameykanni 60 gradusdan ortiq tik qilib qo'yish (bunda ko'krak o'rniga yelka ishlaydi).",
+      "Skameykanni 60 gradusdan ortiq tik qilib qo'yish (yelkaga o'tib ketadi).",
       "Gantellarni shoshilib tez tashlab yuborish."
     ],
-    youtubeQuery: 'incline dumbbell press proper form',
+    youtubeQuery: 'Jeff Nippard Incline Dumbbell Press technique',
     youtubeId: '8iPEnn-ltC8'
   },
   {
@@ -73,15 +71,15 @@ export const DEFAULT_EXERCISES: ExerciseItem[] = [
     nameUz: 'Brusda tushib-chiqish (Dips)',
     muscleGroup: 'chest',
     cues: [
-      "Ko'krakka ko'proq yuk tushishi uchun korpusni bir oz oldinga eging.",
+      "Jeff Nippard tavsiyasi: Ko'krakka ko'proq yuk tushishi uchun gavdani 15-30 gradus oldinga egib bajaring.",
       "Tirsaklarni taxminan 90 gradusgacha sekin tushiring.",
-      "Ko'tarilayotganda ko'krak mushaklarini qisishga e'tibor bering."
+      "Ko'tarilayotganda ko'krak mushaklarini kuchli qisib siqing."
     ],
     mistakes: [
-      "Tik turib bajarish (bu asosan tricepsga o'tib ketadi).",
-      "Haddan tashqari chuqur tushib yelka bo'g'imini jarohatlash."
+      "Tik turib bajarish (bunda ko'krak emas, faqat triceps ishlaydi).",
+      "Haddan tashqari chuqur tushib yelka bo'g'imini zo'riqtirish."
     ],
-    youtubeQuery: 'chest dips form guide',
+    youtubeQuery: 'Jeff Nippard Chest Dips proper technique tutorial',
     youtubeId: '2z8JmcrW-As'
   },
 
@@ -92,16 +90,15 @@ export const DEFAULT_EXERCISES: ExerciseItem[] = [
     nameUz: 'Turnikda tortilish (Pull-ups)',
     muscleGroup: 'back',
     cues: [
-      "Turnikni yelka kengligidan biroz kengroq ushlang (kaftlar oldinga qaragan).",
-      "Harakatni yelka kuraklarini pastga va orqaga tortishdan boshlang.",
-      "Iyak turnik darajasiga yoki undan balandroqqa yetguncha tortiling.",
-      "Pastga tushganda nazorat bilan, to'liq tushib cho'ziling."
+      "Jeff Nippard tavsiyasi: Turnikni yelka kengligidan biroz kengroq ushlang, boshlanishida kuraklarni pastga torting.",
+      "Iyak turnik darajasidan oshguncha ko'krakni turnik sari torting.",
+      "Pastga tushganda sekin, to'liq cho'zilib tushing."
     ],
     mistakes: [
-      "Oyoqlar bilan kuchli silkinish (kipping).",
-      "Yarim tortilish, to'liq cho'zilmaslik."
+      "Oyoqlar bilan silkinib sakrash (kipping).",
+      "Yarim tortilish, pastda to'liq yozilmaslik."
     ],
-    youtubeQuery: 'pull ups proper form tutorial',
+    youtubeQuery: 'Jeff Nippard How To Pull Up Perfect Technique',
     youtubeId: 'eGo4IYlbE5g'
   },
   {
@@ -110,15 +107,15 @@ export const DEFAULT_EXERCISES: ExerciseItem[] = [
     nameUz: 'Blokni ko‘krakka tortish (Lat Pulldown)',
     muscleGroup: 'back',
     cues: [
-      "Dastakni keng ushlang va ko'krak qafasini biroz yuqoriga chiqaring.",
-      "Tirsaklarni to'g'ri pastga va orqaga yo'naltirib ko'krak yuqorisiga torting.",
-      "Tortish paytida nafas chiqaring, tepaga qaytganda nafas oling."
+      "Jeff Nippard tavsiyasi: Dastakni yelka kengligidan 1.5 baravar kengroq ushlang.",
+      "Gavdani 10-15 gradus orqaga egib, tirsaklarni to'g'ri pastga va orqaga yo'naltiring.",
+      "Harakatni orqa qanot (lat) mushaklaridan boshlang."
     ],
     mistakes: [
-      "Haddan tashqari orqaga yotib olish (tanani silkitish).",
-      "Dastakni qorin tomon juda pastga tortish."
+      "Orqaga haddan tashqari yotib, butun gavda bilan chayqalish.",
+      "Dastakni qoringa qadar juda pastga tushirish."
     ],
-    youtubeQuery: 'lat pulldown proper form',
+    youtubeQuery: 'Jeff Nippard The Smartest Way To Lat Pulldown',
     youtubeId: 'CAwf7n6Luuc'
   },
   {
@@ -127,15 +124,15 @@ export const DEFAULT_EXERCISES: ExerciseItem[] = [
     nameUz: 'Shtangani belga tortish (Barbell Row)',
     muscleGroup: 'back',
     cues: [
-      "Tizzalarni biroz buking, korpusni 45 gradus atrofida oldinga eging.",
-      "Orqa va bel mutlaqo to'g'ri, ko'krak oldinda bo'lsin.",
-      "Shtangani kindik yoki qorin pastiga qarab torting, tirsaklar tanaga yaqin yursin."
+      "Jeff Nippard tavsiyasi: Korpusni taxminan 45 gradusda ushlang, bel mutlaqo to'g'ri va qattiq bo'lsin.",
+      "Shtangani kindik sohasi tomon tirsaklar orqali torting.",
+      "Tepada kuraklarni 1 soniya qisib turing."
     ],
     mistakes: [
-      "Belni g'oz qilib (bukrib) olish - bu umurtqa uchun juda xavfli!",
-      "Og'ir vaznda tanani keskin siltab harakatlantirish."
+      "Belni g'oz qilib (bukrib) olish — umurtqa uchun jiddiy xavf!",
+      "Oyoq va gavda bilan siltanib ko'tarish."
     ],
-    youtubeQuery: 'barbell row how to do proper form',
+    youtubeQuery: 'Jeff Nippard The Most Effective Way To Barbell Row',
     youtubeId: 'FWJR5Ve8gkQ'
   },
   {
@@ -144,16 +141,15 @@ export const DEFAULT_EXERCISES: ExerciseItem[] = [
     nameUz: 'Stanovaya tyaga (Deadlift)',
     muscleGroup: 'back',
     cues: [
-      "Shtanga oyoq boldirlariga juda yaqin (tegib) turishi kerak.",
-      "Belni qat'iy tekis ushlang, ko'krakni oching, kuraklarni orqaga bosing.",
-      "Ko'tarishni oyoqlar bilan yerni itarish orqali boshlang.",
-      "Tepada to'liq to'g'rilaning, lekin orqaga keraksiz haddan ortiq egilmang."
+      "Jeff Nippardning 5 qoidasi: Shtanga to'g'ridan-to'g'ri oyoq o'rtasida bo'lsin, boldir shtangadan 2-3 sm masofada turadi.",
+      "Harakatni oyoqlar bilan yerni itarish orqali boshlang (press the floor away).",
+      "Shtanga butun yo'l davomida boldir va songa yopishib harakatlanishi shart."
     ],
     mistakes: [
-      "Dumaloq bel (kattakon xato va churra xavfi!).",
-      "Shtangani tanadan uzoqlashtirib ko'tarish."
+      "Dumaloq bel bilan ko'tarish.",
+      "Shtangani tanadan uzoqlashtirish."
     ],
-    youtubeQuery: 'deadlift proper form tutorial',
+    youtubeQuery: 'Jeff Nippard How To Deadlift With Perfect Technique',
     youtubeId: 'op9kVnSso6Q'
   },
 
@@ -164,18 +160,17 @@ export const DEFAULT_EXERCISES: ExerciseItem[] = [
     nameUz: 'Shtanga bilan o‘tirib-turish (Squats)',
     muscleGroup: 'legs',
     cues: [
-      "Oyoqlarni yelka kengligida qo'ying, barmoq uchlari 15-30 gradus tashqariga qarasin.",
-      "O'tirish paytida tizzalar oyoq uchi yo'nalishida ketsin, tovon yerga mixlangan bo'lsin.",
-      "Sonlar parallel yoki paralleldan bir oz pastroq darajagacha tushing.",
-      "Belni to'g'ri, qorinni qattiq tuting."
+      "Jeff Nippard tavsiyasi: Oyoqlarni yelka kengligida qo'ying, oyoq barmoqlari 15-30 gradus tashqariga qarasin.",
+      "O'tirishda tizzalar oyoq uchi yo'nalishida ketsin, tovonlar erga mahkamlansin.",
+      "Chuqurlik: kamida sonlar polga parallel bo'lguncha tushing."
     ],
     mistakes: [
-      "Tizzalarning ichkariga qarab qulashi (valgus).",
-      "Tovonlarning yerdan uzilishi.",
-      "Oldinga ortiqcha egilib ketish."
+      "Tizzalarning ichkariga qulashi (valgus).",
+      "Tovonning yerdan uzilib qolishi.",
+      "Oldinga haddan tashqari egilib ketish."
     ],
-    youtubeQuery: 'how to squat properly form',
-    youtubeId: 'gcNh17Ckjgg'
+    youtubeQuery: 'Jeff Nippard How To Get A Huge Squat With Perfect Technique',
+    youtubeId: 'zoW1Wlq67nE'
   },
   {
     id: 'leg-press',
@@ -183,15 +178,15 @@ export const DEFAULT_EXERCISES: ExerciseItem[] = [
     nameUz: 'Oyoqda platforma itarish (Leg Press)',
     muscleGroup: 'legs',
     cues: [
-      "Bel va dumbani o'rindiqqa mahkam yopishtiring.",
-      "Platformani tizzalar taxminan 90 gradus bo'lguncha nazorat bilan tushiring.",
-      "Itarish paytida tizzalarni oxirigacha blokirovka qilib to'g'rilamang!"
+      "Jeff Nippard tavsiyasi: Oyoqlarni platforma o'rtasiga qo'ying, dumbani o'rindiqqa mahkam bosing.",
+      "Platformani tizzalar 90 gradus burchak hosil qilguncha nazorat bilan tushiring.",
+      "Itarganda tizzalarni oxirigacha blokirovka qilib to'g'rilamang!"
     ],
     mistakes: [
-      "Tepadagi eng xavfli xato: tizzalarni to'liq qotirib, teskariga qayrilish xavfini tug'dirish.",
+      "Tepadagi eng xavfli xato: tizzani to'liq qotirib, teskariga sinish xavfini keltirib chiqarish.",
       "Dumbaning o'rindiqdan ko'tarilib ketishi."
     ],
-    youtubeQuery: 'leg press common mistakes form',
+    youtubeQuery: 'Jeff Nippard Leg Press mistakes science',
     youtubeId: 'sPt_b1g_2Hw'
   },
   {
@@ -200,15 +195,15 @@ export const DEFAULT_EXERCISES: ExerciseItem[] = [
     nameUz: 'Rumincha tyaga (Son orqasi / RDL)',
     muscleGroup: 'legs',
     cues: [
-      "Tizzalar birozgina bukilgan, lekin qimirlamaydi (qotirilgan).",
-      "Harakat dumbani orqaga cho'zish orqali amalga oshiriladi (hip hinge).",
-      "Shtanga oyoq bo'ylab sirg'anib tushadi, son orqa mushagi cho'zilguncha tushiriladi."
+      "Jeff Nippard tavsiyasi: Tizzalarni biroz bukilgan holatda mahkamlang (qimirlatmasdan).",
+      "Harakat dumbani orqaga cho'zish orqali bajariladi (hip hinge).",
+      "Shtanga oyoq bo'ylab sirg'anib tushadi, son orqasi to'liq cho'zilguncha tushiriladi."
     ],
     mistakes: [
-      "Prisedaniyaga aylantirib tizzalarni ko'p bukish.",
-      "Belni egib shtangani yerga tekkizishga harakat qilish."
+      "Prisedaniyaga o'xshatib tizzani ko'p bukish.",
+      "Belni egib shtangani yerga tekkizishga urinish."
     ],
-    youtubeQuery: 'romanian deadlift form rdl',
+    youtubeQuery: 'Jeff Nippard Romanian Deadlift technique RDL',
     youtubeId: 'JCXUYuzwNrM'
   },
 
@@ -216,18 +211,18 @@ export const DEFAULT_EXERCISES: ExerciseItem[] = [
   {
     id: 'overhead-press',
     name: 'Overhead Press (OHP)',
-    nameUz: 'Shtangani tepaga ko‘tarish (Armeyskiy Jim)',
+    nameUz: 'Shtangani tepaga ko‘tarish (Military Press)',
     muscleGroup: 'shoulders',
     cues: [
-      "Tik turing, qorin va dumbani qattiq siqing (orqa egilmasligi uchun).",
-      "Shtangani to'g'ri vertikal chiziqda bosh ustiga ko'taring.",
-      "Shtanga boshdan o'tgach, boshni biroz oldinga keltirib to'liq yozing."
+      "Jeff Nippard tavsiyasi: Tik turing, dumba va qorinni qattiq siqib tanani mustahkamlang.",
+      "Shtanga to'g'ri vertikal chiziqda bosh ustiga ko'tarilsin.",
+      "Shtanga peshonadan o'tgach, boshni biroz oldinga keltirib to'liq yozing."
     ],
     mistakes: [
-      "Orqani qavariq qilib orqaga haddan tashqari egilish.",
-      "Tizzalar orqali siltab sakrash (agar push-press bo'lmasa)."
+      "Orqani qavariq qilib orqaga egilish (bel og'rig'iga olib keladi).",
+      "Tizzalar bilan siltab sakrash."
     ],
-    youtubeQuery: 'overhead press form military press',
+    youtubeQuery: 'Jeff Nippard How To Overhead Press Military Press',
     youtubeId: '2yjwXTZQDDI'
   },
   {
@@ -236,15 +231,15 @@ export const DEFAULT_EXERCISES: ExerciseItem[] = [
     nameUz: 'Gantellarni yonga ko‘tarish (Mahi)',
     muscleGroup: 'shoulders',
     cues: [
-      "Tirsaklar birozgina bukilgan bo'lsin.",
-      "Gantellarni yelka balandligigacha ko'taring, tirsaklar qo'l kaftidan pastda qolmasin.",
-      "Harakatni yelkaning o'rta qismi bilan his qilib bajaring."
+      "Jeff Nippard tavsiyasi: Gantellarni to'g'ridan-to'g'ri yonga emas, 15-30 gradus oldinga (scapular plane) ko'taring.",
+      "Tirsaklar yengil bukilgan bo'lsin, tirsak qo'l kaftidan pastda qolmasin.",
+      "Yelka balandligigacha ko'taring va 1 soniya ushlab turing."
     ],
     mistakes: [
-      "Og'ir tosh olib, butun tana bilan chayqalish.",
-      "Trapetsiyani ko'tarib yelkani qisib olish."
+      "Og'ir tosh olib butun gavda bilan chayqalish.",
+      "Trapetsiya mushagini ko'tarib yelkani qisib olish."
     ],
-    youtubeQuery: 'dumbbell lateral raises proper form',
+    youtubeQuery: 'Jeff Nippard The Most Effective Way To Lateral Raise',
     youtubeId: '3VcKaXpzqRo'
   },
 
@@ -255,15 +250,15 @@ export const DEFAULT_EXERCISES: ExerciseItem[] = [
     nameUz: 'Shtanga bilan bicep ko‘tarish',
     muscleGroup: 'arms',
     cues: [
-      "Tirsaklar tananing ikki yoniga mahkamlangan va oldinga-orqaga harakatlanmasin.",
-      "Faqat tirsak bo'g'imi harakatlanadi, gavda tik turadi.",
-      "Tepada bicepni 1 soniya qattiq qising, pastga tushish esa sekin bo'lsin (2-3 soniya)."
+      "Jeff Nippard tavsiyasi: Tirsaklarni tanaga mahkam yopishtirib, oldinga-orqaga tebranishdan saqlaning.",
+      "Ko'tarishda faqat bicep qisqarsin, tepada 1 soniya qattiq siqing.",
+      "Pastga tushish 2-3 soniya davom etsin (eccentric fazani nazorat qiling)."
     ],
     mistakes: [
-      "Bel orqali orqaga chayqalib inersiya bilan ko'tarish.",
-      "Tirsaklarni oldinga ko'tarib yuborish (bu yelkaga yukni o'tkazadi)."
+      "Bel orqali chayqalib inersiya bilan ko'tarish.",
+      "Tirsaklarni oldinga ko'tarib yukni yelkaga o'tkazish."
     ],
-    youtubeQuery: 'bicep curl form barbell',
+    youtubeQuery: 'Jeff Nippard The Smartest Way To Build Bigger Biceps',
     youtubeId: 'ykJmrZ5v0Oo'
   },
   {
@@ -272,15 +267,15 @@ export const DEFAULT_EXERCISES: ExerciseItem[] = [
     nameUz: 'Blokda tricepsni pastga yozish',
     muscleGroup: 'arms',
     cues: [
-      "Tirsaklar qovurg'alarga mahkam tiralsin.",
-      "Dastakni yoki arqonni pastga to'liq yozing va tricepsni qising.",
-      "Qo'l 90 gradusga qaytguncha sekin qaytaring."
+      "Jeff Nippard tavsiyasi: Tirsaklarni qovurg'alarga mahkam tirang va pastga to'liq yozing.",
+      "Arqon bilan bajarganda, pastda ikki chetga ochib tricepsni maksimal qising.",
+      "Qo'l 90 gradusga yetguncha sekin qaytaring."
     ],
     mistakes: [
-      "Tirsaklarni qanot kabi ochib yuborish.",
+      "Tirsaklarni harakat davomida qanot kabi ochib yuborish.",
       "Gavda og'irligi bilan blok ustiga yotib olish."
     ],
-    youtubeQuery: 'tricep rope pushdown form',
+    youtubeQuery: 'Jeff Nippard The Best Way To Build Bigger Triceps',
     youtubeId: '2-LAMcpzODU'
   },
 
@@ -291,15 +286,15 @@ export const DEFAULT_EXERCISES: ExerciseItem[] = [
     nameUz: 'Planka (Plank)',
     muscleGroup: 'core',
     cues: [
-      "Tirsaklar to'g'ridan-to'g'ri yelkalar ostida bo'lsin.",
-      "Qorinni ichga tortib, press mushaklarini qattiq qising.",
-      "Dumba ko'tarilib ketmasin va pastga cho'kmasin — to'g'ri chiziq hosil qiling."
+      "Jeff Nippard tavsiyasi: Faqat turish emas, qorin va dumbani faol tarzda qattiq siqib 'hollow body' pozitsiyasini oling.",
+      "Tirsaklar to'g'ri yelkalar ostida bo'lsin.",
+      "Nafasni ushlab qolmang, bir maromda chuqur nafas oling."
     ],
     mistakes: [
-      "Belni osiltirib qo'yish (orqa og'rig'iga olib keladi).",
-      "Nafasni ushlab qolish — bir maromda nafas oling."
+      "Belni pastga osiltirib yuborish.",
+      "Boshni haddan tashqari ko'tarish yoki osiltirish."
     ],
-    youtubeQuery: 'how to plank properly',
+    youtubeQuery: 'Jeff Nippard The Best Way To Train Abs Core',
     youtubeId: 'ASdvN_XEl_c'
   },
   {
@@ -308,15 +303,15 @@ export const DEFAULT_EXERCISES: ExerciseItem[] = [
     nameUz: 'Turnikda oyoq/tizza ko‘tarish',
     muscleGroup: 'core',
     cues: [
-      "Turnikda osilib turganda yelkalarni bo'sh qo'ymang, kuraklarni ozgina torting.",
-      "Tizzalarni yoki to'g'ri oyoqlarni qorin kuchi bilan ko'krakka torting.",
-      "Pastga tushganda tebranmaslikka harakat qiling."
+      "Jeff Nippard tavsiyasi: Turnikda osilganda tebranmaslik uchun har bir takror oldidan to'liq to'xtang.",
+      "Tizzalarni yoki tekis oyoqlarni ko'tarayotganda tos suyagini (pelvis) yuqoriga buking.",
+      "Faqat oyoqni emas, qorin mushagini siqishga diqqat qarating."
     ],
     mistakes: [
-      "Tanani chayqatib mayatnik kabi inersiya bilan ko'tarish.",
-      "Faqat son mushaklari orqali ko'tarish."
+      "Inersiya bilan siltanib tebranish.",
+      "Tos suyagini bukmasdan faqat son mushagi orqali ko'tarish."
     ],
-    youtubeQuery: 'hanging leg raises form',
+    youtubeQuery: 'Jeff Nippard Hanging Leg Raises Abs Form',
     youtubeId: 'hdng3Nm1x_E'
   }
 ];
