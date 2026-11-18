@@ -1,0 +1,21 @@
+{
+  "short_name": "GymNotes",
+  "name": "GymNotes - Sport & Zal mashqlari kundaligi",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#0a0a0c",
+  "theme_color": "#0a0a0c",
+  "display": "standalone",
+  "orientation": "portrait"
+}
