@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import type { WorkoutSession, ExerciseSet, ExerciseItem } from '../types';
+import { getExerciseShortsUrl } from '../utils/youtube';
 import { 
-  Play, Check, Trash2, Plus, Info, Timer, Flame, Dumbbell, Minus
+  Play, Check, Trash2, Plus, Info, Timer, Flame, Dumbbell, Minus, Zap
 } from 'lucide-react';
 
 interface WorkoutActiveProps {
@@ -181,6 +182,16 @@ export const WorkoutActive: React.FC<WorkoutActiveProps> = ({
                     <h3 className="text-sm font-bold text-white">{we.exercise.nameUz}</h3>
                   </div>
                   <div className="flex items-center gap-1">
+                    <a
+                      href={getExerciseShortsUrl(we.exercise)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-2 py-1 rounded-md text-red-400 hover:text-red-300 hover:bg-red-500/10 flex items-center gap-1 text-[11px] font-bold transition-colors"
+                      title="30-soniyalik YouTube Shorts"
+                    >
+                      <Zap size={12} className="fill-red-400" />
+                      <span>Shorts</span>
+                    </a>
                     <button onClick={() => onOpenTechnique(we.exercise)} className="p-1.5 rounded-lg text-slate-500 hover:text-emerald-400 hover:bg-white/5" title="Texnika">
                       <Info size={15} />
                     </button>

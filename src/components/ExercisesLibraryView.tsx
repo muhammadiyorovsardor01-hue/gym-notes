@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import type { ExerciseItem } from '../types';
 import { MUSCLE_GROUPS } from '../data/defaultExercises';
-import { Search, Play, Info, Plus } from 'lucide-react';
+import { getExerciseShortsUrl, getExerciseThumbnailUrl } from '../utils/youtube';
+import { Search, Play, Info, Plus, Zap } from 'lucide-react';
 
 interface ExercisesLibraryViewProps {
   exercises: ExerciseItem[];
@@ -70,48 +71,62 @@ export const ExercisesLibraryView: React.FC<ExercisesLibraryViewProps> = ({
       {/* Exercise cards */}
       <div className="space-y-2">
         {filtered.map((exercise) => {
-          const thumbnailUrl = exercise.youtubeId 
-            ? `https://img.youtube.com/vi/${exercise.youtubeId}/mqdefault.jpg` 
-            : null;
-          const youtubeVideoUrl = exercise.youtubeId
-            ? `https://www.youtube.com/watch?v=${exercise.youtubeId}`
-            : `https://www.youtube.com/results?search_query=${encodeURIComponent(exercise.youtubeQuery || exercise.name)}`;
+          const thumbnailUrl = getExerciseThumbnailUrl(exercise);
+          const shortsUrl = getExerciseShortsUrl(exercise);
 
           return (
             <div
               key={exercise.id}
-              className="bg-[#12141c] border border-[#222636] rounded-xl overflow-hidden flex"
+              className="bg-[#12141c] border border-[#222636] hover:border-[#2f354a] rounded-xl overflow-hidden flex transition-all"
             >
-              {/* Thumbnail */}
+              {/* Thumbnail — 1 tap directly to YouTube Shorts! */}
               <a
-                href={youtubeVideoUrl}
+                href={shortsUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="relative w-28 sm:w-32 flex-shrink-0 bg-[#0d0e14] block group"
+                className="relative w-28 sm:w-32 flex-shrink-0 bg-[#0d0e14] block group overflow-hidden"
+                title="30-soniyalik YouTube Shorts'da ko'rish"
               >
                 {thumbnailUrl ? (
                   <>
-                    <img src={thumbnailUrl} alt={exercise.name} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" loading="lazy" />
-                    <div className="absolute inset-0 flex items-center justify-center bg-black/40 group-hover:bg-black/20 transition-colors">
-                      <div className="w-8 h-8 rounded-full bg-red-600 flex items-center justify-center">
+                    <img 
+                      src={thumbnailUrl} 
+                      alt={exercise.name} 
+                      className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all" 
+                      loading="lazy" 
+                    />
+                    <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/40 group-hover:bg-black/20 transition-colors">
+                      <div className="w-8 h-8 rounded-full bg-red-600 flex items-center justify-center shadow-md">
                         <Play size={12} className="ml-0.5 fill-white text-white" />
                       </div>
+                      <span className="text-[9px] font-bold text-white bg-red-600/90 px-1.5 py-0.5 rounded mt-1.5 flex items-center gap-0.5">
+                        <Zap size={9} className="fill-white" /> Shorts
+                      </span>
                     </div>
                   </>
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center min-h-[72px]">
-                    <Play size={16} className="text-slate-600" />
+                  <div className="w-full h-full flex flex-col items-center justify-center min-h-[76px] text-slate-600">
+                    <Play size={16} />
+                    <span className="text-[9px] font-bold mt-1 text-slate-500">Shorts</span>
                   </div>
                 )}
               </a>
 
               {/* Info */}
-              <div className="flex-1 p-3 flex flex-col justify-between min-h-[72px]">
+              <div className="flex-1 p-3 flex flex-col justify-between min-h-[76px]">
                 <div>
                   <div className="flex items-center gap-1.5 mb-1">
-                    <span className="text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-[#181b26] text-slate-500">
+                    <span className="text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-[#181b26] text-slate-400">
                       {exercise.muscleGroup}
                     </span>
+                    <a
+                      href={shortsUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[9px] font-bold text-red-400 hover:text-red-300 flex items-center gap-0.5"
+                    >
+                      <Zap size={10} className="fill-red-400" /> 30s
+                    </a>
                   </div>
                   <h3 
                     className="text-[13px] font-bold text-white leading-snug cursor-pointer hover:text-emerald-400 transition-colors"
@@ -120,17 +135,17 @@ export const ExercisesLibraryView: React.FC<ExercisesLibraryViewProps> = ({
                     {exercise.nameUz}
                   </h3>
                 </div>
-                <div className="flex items-center justify-between mt-2">
+                <div className="flex items-center justify-between mt-2 pt-1 border-t border-[#1a1d2a]">
                   <button
                     onClick={() => onOpenTechnique(exercise)}
-                    className="text-[10px] text-slate-500 hover:text-emerald-400 font-medium flex items-center gap-1 transition-colors"
+                    className="text-[10px] text-slate-400 hover:text-emerald-400 font-medium flex items-center gap-1 transition-colors"
                   >
-                    <Info size={12} /> Texnika
+                    <Info size={12} /> Texnika & Qoidalar
                   </button>
                   {onSelectForWorkout && (
                     <button
                       onClick={() => onSelectForWorkout(exercise)}
-                      className="px-2 py-1 rounded-md bg-emerald-500/10 hover:bg-emerald-500 text-emerald-400 hover:text-black font-bold text-[10px] flex items-center gap-1 transition-colors"
+                      className="px-2.5 py-1 rounded-md bg-emerald-500/10 hover:bg-emerald-500 text-emerald-400 hover:text-black font-bold text-[10px] flex items-center gap-1 transition-colors"
                     >
                       <Plus size={11} /> Qo'shish
                     </button>

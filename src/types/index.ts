@@ -16,6 +16,8 @@ export interface ExerciseItem {
   mistakes: string[];
   youtubeQuery: string;
   youtubeId?: string;
+  shortsId?: string;
+  shortsQuery?: string;
   isCustom?: boolean;
 }
 
