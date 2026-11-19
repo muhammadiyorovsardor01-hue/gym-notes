@@ -15,7 +15,9 @@ import {
   deleteWorkoutFromHistory,
   getPersonalRecords,
   getDefaultRestDuration,
-  getWorkoutTemplates
+  getWorkoutTemplates,
+  saveAllWorkoutTemplates,
+  resetWorkoutTemplatesToDefault
 } from './utils/storage';
 
 import { Header } from './components/Header';
@@ -41,6 +43,7 @@ export function App() {
 
   // Modals state
   const [isSelectorOpen, setIsSelectorOpen] = useState(false);
+  const [targetDayIdForExercise, setTargetDayIdForExercise] = useState<string | null>(null);
   const [techniqueExercise, setTechniqueExercise] = useState<ExerciseItem | null>(null);
   const [isRestTimerOpen, setIsRestTimerOpen] = useState(false);
   const [restDuration, setRestDuration] = useState(90);
@@ -60,6 +63,26 @@ export function App() {
   const handleUpdateActiveWorkout = (workout: WorkoutSession) => {
     setActiveWorkout(workout);
     saveActiveWorkout(workout);
+  };
+
+  // Update templates and save to localStorage
+  const handleUpdateTemplates = (updated: WorkoutTemplate[]) => {
+    setTemplates(updated);
+    saveAllWorkoutTemplates(updated);
+  };
+
+  // Reset templates to default
+  const handleResetTemplates = () => {
+    if (confirm("Kunlik dasturlarni (Day 1, 2, 3) asl holatiga qaytarmoqchimisiz?")) {
+      const reset = resetWorkoutTemplatesToDefault();
+      setTemplates(reset);
+    }
+  };
+
+  // Open exercise selector specifically to add an exercise into a Day (e.g. Day 1)
+  const handleOpenAddExerciseToDay = (templateId: string) => {
+    setTargetDayIdForExercise(templateId);
+    setIsSelectorOpen(true);
   };
 
   // Start a new blank workout session
@@ -197,6 +220,36 @@ export function App() {
     setCurrentTab('history');
   };
 
+  // Handle selecting an exercise from modal
+  const handleSelectExerciseFromModal = (exercise: ExerciseItem) => {
+    if (targetDayIdForExercise) {
+      // User is adding exercise to a specific Day (e.g. Day 1)
+      const updated = templates.map(t => {
+        if (t.id === targetDayIdForExercise) {
+          // Check if already in this day
+          if (t.exercises.some(e => e.exerciseId === exercise.id)) {
+            return t;
+          }
+          return {
+            ...t,
+            exercises: [
+              ...t.exercises,
+              { exerciseId: exercise.id, setsCount: 3, targetReps: '10' }
+            ]
+          };
+        }
+        return t;
+      });
+      handleUpdateTemplates(updated);
+      setTargetDayIdForExercise(null);
+      setIsSelectorOpen(false);
+      return;
+    }
+
+    // Otherwise, add to active workout
+    handleAddExerciseToWorkout(exercise);
+  };
+
   // Add single exercise to active workout
   const handleAddExerciseToWorkout = (exercise: ExerciseItem) => {
     let session = activeWorkout;
@@ -271,7 +324,10 @@ export function App() {
             onUpdateWorkout={handleUpdateActiveWorkout}
             onFinishWorkout={handleFinishWorkout}
             onCancelWorkout={handleCancelWorkout}
-            onOpenExerciseSelector={() => setIsSelectorOpen(true)}
+            onOpenExerciseSelector={() => {
+              setTargetDayIdForExercise(null);
+              setIsSelectorOpen(true);
+            }}
             onOpenTechnique={(ex) => setTechniqueExercise(ex)}
             onTriggerRestTimer={() => setIsRestTimerOpen(true)}
             previousRecords={personalRecords}
@@ -284,6 +340,9 @@ export function App() {
             exercises={exercises}
             onStartTemplate={handleStartTemplate}
             onOpenTechnique={(ex) => setTechniqueExercise(ex)}
+            onUpdateTemplates={handleUpdateTemplates}
+            onResetTemplates={handleResetTemplates}
+            onOpenAddExerciseToDay={handleOpenAddExerciseToDay}
           />
         )}
 
@@ -314,9 +373,12 @@ export function App() {
       {/* Modals */}
       <ExerciseSelectorModal
         isOpen={isSelectorOpen}
-        onClose={() => setIsSelectorOpen(false)}
+        onClose={() => {
+          setIsSelectorOpen(false);
+          setTargetDayIdForExercise(null);
+        }}
         exercises={exercises}
-        onSelectExercise={handleAddExerciseToWorkout}
+        onSelectExercise={handleSelectExerciseFromModal}
         onOpenTechnique={(ex) => setTechniqueExercise(ex)}
         onAddNewCustomExercise={handleAddNewCustomExercise}
       />

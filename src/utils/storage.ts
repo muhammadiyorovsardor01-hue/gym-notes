@@ -8,7 +8,7 @@ const STORAGE_KEYS = {
   CUSTOM_EXERCISES: 'gymnotes_custom_exercises',
   PERSONAL_RECORDS: 'gymnotes_prs',
   REST_DURATION: 'gymnotes_rest_duration',
-  CUSTOM_TEMPLATES: 'gymnotes_custom_templates',
+  TEMPLATES_V2: 'gymnotes_templates_v2',
 };
 
 export const getExercises = (): ExerciseItem[] => {
@@ -149,40 +149,37 @@ export const setDefaultRestDuration = (seconds: number) => {
   }
 };
 
-// WORKOUT TEMPLATES / ROUTINES (Day 1, Day 2, Day 3)
+// WORKOUT TEMPLATES / ROUTINES (Fully editable & customizable)
 export const getWorkoutTemplates = (): WorkoutTemplate[] => {
   try {
-    const custom = localStorage.getItem(STORAGE_KEYS.CUSTOM_TEMPLATES);
-    const customList: WorkoutTemplate[] = custom ? JSON.parse(custom) : [];
-    return [...DEFAULT_TEMPLATES, ...customList];
+    const saved = localStorage.getItem(STORAGE_KEYS.TEMPLATES_V2);
+    if (saved) {
+      return JSON.parse(saved);
+    }
+    // Initialize with default templates
+    localStorage.setItem(STORAGE_KEYS.TEMPLATES_V2, JSON.stringify(DEFAULT_TEMPLATES));
+    return DEFAULT_TEMPLATES;
   } catch (e) {
     console.error('Error reading templates', e);
     return DEFAULT_TEMPLATES;
   }
 };
 
-export const saveCustomWorkoutTemplate = (template: WorkoutTemplate): WorkoutTemplate[] => {
+export const saveAllWorkoutTemplates = (templates: WorkoutTemplate[]): WorkoutTemplate[] => {
   try {
-    const custom = localStorage.getItem(STORAGE_KEYS.CUSTOM_TEMPLATES);
-    const customList: WorkoutTemplate[] = custom ? JSON.parse(custom) : [];
-    customList.push(template);
-    localStorage.setItem(STORAGE_KEYS.CUSTOM_TEMPLATES, JSON.stringify(customList));
-    return [...DEFAULT_TEMPLATES, ...customList];
+    localStorage.setItem(STORAGE_KEYS.TEMPLATES_V2, JSON.stringify(templates));
+    return templates;
   } catch (e) {
-    console.error('Error saving custom template', e);
-    return DEFAULT_TEMPLATES;
+    console.error('Error saving templates', e);
+    return templates;
   }
 };
 
-export const deleteCustomWorkoutTemplate = (id: string): WorkoutTemplate[] => {
+export const resetWorkoutTemplatesToDefault = (): WorkoutTemplate[] => {
   try {
-    const custom = localStorage.getItem(STORAGE_KEYS.CUSTOM_TEMPLATES);
-    const customList: WorkoutTemplate[] = custom ? JSON.parse(custom) : [];
-    const updated = customList.filter(t => t.id !== id);
-    localStorage.setItem(STORAGE_KEYS.CUSTOM_TEMPLATES, JSON.stringify(updated));
-    return [...DEFAULT_TEMPLATES, ...updated];
+    localStorage.setItem(STORAGE_KEYS.TEMPLATES_V2, JSON.stringify(DEFAULT_TEMPLATES));
+    return DEFAULT_TEMPLATES;
   } catch (e) {
-    console.error('Error deleting template', e);
     return DEFAULT_TEMPLATES;
   }
 };
