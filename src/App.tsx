@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import type { 
   WorkoutSession, 
   ExerciseItem, 
-  PersonalRecord 
+  PersonalRecord,
+  WorkoutTemplate
 } from './types';
 import { 
   getExercises, 
@@ -13,7 +14,8 @@ import {
   saveWorkoutToHistory, 
   deleteWorkoutFromHistory,
   getPersonalRecords,
-  getDefaultRestDuration
+  getDefaultRestDuration,
+  getWorkoutTemplates
 } from './utils/storage';
 
 import { Header } from './components/Header';
@@ -26,11 +28,13 @@ import { RestTimer } from './components/RestTimerModal';
 import { WorkoutSummaryModal } from './components/WorkoutSummaryModal';
 import { ExercisesLibraryView } from './components/ExercisesLibraryView';
 import { HistoryView } from './components/HistoryView';
+import { TemplatesView } from './components/TemplatesView';
 import { InstallShortcutBanner } from './components/InstallShortcutBanner';
 
 export function App() {
   const [currentTab, setCurrentTab] = useState<TabType>('workout');
   const [exercises, setExercises] = useState<ExerciseItem[]>([]);
+  const [templates, setTemplates] = useState<WorkoutTemplate[]>([]);
   const [activeWorkout, setActiveWorkout] = useState<WorkoutSession | null>(null);
   const [history, setHistory] = useState<WorkoutSession[]>([]);
   const [personalRecords, setPersonalRecords] = useState<Record<string, PersonalRecord>>({});
@@ -45,19 +49,20 @@ export function App() {
   // Load persisted state on mount
   useEffect(() => {
     setExercises(getExercises());
+    setTemplates(getWorkoutTemplates());
     setActiveWorkout(getActiveWorkout());
     setHistory(getWorkoutHistory());
     setPersonalRecords(getPersonalRecords());
     setRestDuration(getDefaultRestDuration());
   }, []);
 
-  // Sync active workout to localStorage whenever it changes
+  // Sync active workout to localStorage whenever it changes (guarantees NO data loss on page refresh)
   const handleUpdateActiveWorkout = (workout: WorkoutSession) => {
     setActiveWorkout(workout);
     saveActiveWorkout(workout);
   };
 
-  // Start a new workout session
+  // Start a new blank workout session
   const handleStartWorkout = () => {
     const today = new Date();
     const dayNames = ['Yakshanba', 'Dushanba', 'Seshanba', 'Chorshanba', 'Payshanba', 'Juma', 'Shanba'];
@@ -78,6 +83,65 @@ export function App() {
     setCurrentTab('workout');
   };
 
+  // Start a preset routine / day (Day 1, Day 2, Day 3)
+  const handleStartTemplate = (template: WorkoutTemplate) => {
+    if (activeWorkout && activeWorkout.exercises.length > 0) {
+      if (!confirm("Hozir boshqa mashg'ulot davom etmoqda. Uni yangi dastur bilan almashtirmoqchimisiz?")) {
+        return;
+      }
+    }
+
+    const exMap = new Map<string, ExerciseItem>();
+    exercises.forEach(e => exMap.set(e.id, e));
+
+    const workoutExercises = template.exercises.map((item, exIdx) => {
+      const ex = exMap.get(item.exerciseId) || {
+        id: item.exerciseId,
+        name: item.exerciseId,
+        nameUz: item.exerciseId,
+        muscleGroup: 'chest' as const,
+        cues: [],
+        mistakes: [],
+        youtubeQuery: `${item.exerciseId} form`,
+      };
+
+      const pr = personalRecords[ex.id];
+      const defaultWeight = pr ? pr.maxWeight : 20;
+
+      // Extract numeric reps target (e.g. "10" -> 10, "12-15" -> 12, "30-40 soniya" -> 35)
+      const parsedReps = parseInt(item.targetReps, 10) || 10;
+
+      const sets = Array.from({ length: item.setsCount }, (_, sIdx) => ({
+        id: `set-${Date.now()}-${exIdx}-${sIdx}`,
+        setNumber: sIdx + 1,
+        weight: defaultWeight,
+        reps: parsedReps,
+        completed: false,
+        type: 'regular' as const,
+      }));
+
+      return {
+        id: `we-${Date.now()}-${exIdx}`,
+        exerciseId: ex.id,
+        exercise: ex,
+        sets,
+      };
+    });
+
+    const newSession: WorkoutSession = {
+      id: `workout-${Date.now()}`,
+      title: template.name,
+      startTime: Date.now(),
+      exercises: workoutExercises,
+      totalVolume: 0,
+      totalSets: 0,
+      totalReps: 0,
+    };
+
+    handleUpdateActiveWorkout(newSession);
+    setCurrentTab('workout');
+  };
+
   // Cancel / Discard active workout
   const handleCancelWorkout = () => {
     if (confirm("Haqiqatan ham davom etayotgan mashg'ulotni bekor qilmoqchimisiz?")) {
@@ -90,7 +154,6 @@ export function App() {
   const handleFinishWorkout = () => {
     if (!activeWorkout) return;
 
-    // Calculate totals
     let volume = 0;
     let completedSetsCount = 0;
     let totalRepsCount = 0;
@@ -134,11 +197,10 @@ export function App() {
     setCurrentTab('history');
   };
 
-  // Add exercise to active workout
+  // Add single exercise to active workout
   const handleAddExerciseToWorkout = (exercise: ExerciseItem) => {
     let session = activeWorkout;
     if (!session) {
-      // Auto-start workout if not yet started
       const today = new Date();
       const dayNames = ['Yakshanba', 'Dushanba', 'Seshanba', 'Chorshanba', 'Payshanba', 'Juma', 'Shanba'];
       session = {
@@ -194,7 +256,7 @@ export function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0a0a0c] text-neutral-100 flex flex-col font-sans selection:bg-emerald-500 selection:text-black">
+    <div className="min-h-screen bg-[#090a0f] text-neutral-100 flex flex-col font-sans selection:bg-emerald-500 selection:text-black">
       {/* Top Header */}
       <Header activeWorkoutCount={activeWorkout ? 1 : 0} />
 
@@ -213,6 +275,15 @@ export function App() {
             onOpenTechnique={(ex) => setTechniqueExercise(ex)}
             onTriggerRestTimer={() => setIsRestTimerOpen(true)}
             previousRecords={personalRecords}
+          />
+        )}
+
+        {currentTab === 'templates' && (
+          <TemplatesView
+            templates={templates}
+            exercises={exercises}
+            onStartTemplate={handleStartTemplate}
+            onOpenTechnique={(ex) => setTechniqueExercise(ex)}
           />
         )}
 

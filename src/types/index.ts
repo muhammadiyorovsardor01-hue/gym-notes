@@ -5,6 +5,7 @@ export type MuscleGroup =
   | 'shoulders' 
   | 'arms' 
   | 'core' 
+  | 'neck'
   | 'cardio';
 
 export interface ExerciseItem {
@@ -59,4 +60,19 @@ export interface PersonalRecord {
   maxWeight: number; // kg
   maxRepsAtMaxWeight: number;
   date: string;
+}
+
+export interface TemplateExerciseItem {
+  exerciseId: string;
+  setsCount: number;
+  targetReps: string; // e.g. "10", "12", "30-40 soniya"
+}
+
+export interface WorkoutTemplate {
+  id: string;
+  name: string;
+  description: string;
+  dayBadge: string; // e.g. "1-kun", "2-kun", "3-kun"
+  exercises: TemplateExerciseItem[];
+  isCustom?: boolean;
 }

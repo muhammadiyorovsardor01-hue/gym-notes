@@ -5,313 +5,484 @@ export const MUSCLE_GROUPS: { key: MuscleGroup; labelUz: string; icon: string }[
   { key: 'back', labelUz: "Orqa (Back)", icon: '🦅' },
   { key: 'legs', labelUz: "Oyoq (Legs)", icon: '🦵' },
   { key: 'shoulders', labelUz: "Yelka (Shoulders)", icon: '🛡️' },
-  { key: 'arms', labelUz: "Qo'l / Qo'llar (Arms)", icon: '⚡' },
-  { key: 'core', labelUz: "Qorin / Press (Core)", icon: '🔥' },
+  { key: 'arms', labelUz: "Qo'l (Arms)", icon: '⚡' },
+  { key: 'core', labelUz: "Qorin (Core)", icon: '🔥' },
+  { key: 'neck', labelUz: "Bo'yin (Neck)", icon: '👤' },
   { key: 'cardio', labelUz: "Kardio (Cardio)", icon: '🏃' },
 ];
 
 export const DEFAULT_EXERCISES: ExerciseItem[] = [
-  // CHEST
+  // DAY 1 EXERCISES
+  {
+    id: 'squats',
+    name: 'Barbell Back Squat',
+    nameUz: 'Squats (Shtanga bilan o‘tirish)',
+    muscleGroup: 'legs',
+    cues: [
+      "Oyoqlarni yelka kengligida qo'ying, oyoq barmoqlari 15-30° tashqariga qarasin.",
+      "Tizzalar oyoq uchi tomon harakatlansin, tovon yerdan uzilmasin.",
+      "Kamida sonlar parallel bo'lguncha tushing, belni to'g'ri tuting."
+    ],
+    mistakes: [
+      "Tizzalarni ichkariga qulatish.",
+      "Tovonlarni yerdan ko'tarib olish."
+    ],
+    youtubeQuery: 'Jeff Nippard How To Squat With Perfect Technique',
+    youtubeId: 'zoW1Wlq67nE',
+    shortsQuery: 'Jeff Nippard squat proper form shorts #shorts'
+  },
+  {
+    id: 'bench-press',
+    name: 'Barbell Bench Press',
+    nameUz: 'Bench Press (Shtanga yotib ko‘tarish)',
+    muscleGroup: 'chest',
+    cues: [
+      "Skameykaga yotganda yelka kuraklarini (scapula) orqaga va pastga qisib oling.",
+      "Oyoqlarni polga mahkam tirab 'leg drive' hosil qiling.",
+      "Shtangani ko'krak uchi sohasiga nazorat bilan tushiring, tirsaklar 45-75° burchakda bo'lsin."
+    ],
+    mistakes: [
+      "Shtangani ko'krakka urib sakratish.",
+      "Tirsaklarni 90° ga yoyib yuborish."
+    ],
+    youtubeQuery: 'Jeff Nippard How To Bench Press with Perfect Technique',
+    youtubeId: 'vcBig73ojpE',
+    shortsQuery: 'Jeff Nippard bench press form shorts #shorts'
+  },
+  {
+    id: 'cable-rows',
+    name: 'Seated Cable Rows',
+    nameUz: 'Cable Rows (Blokda gorizontal tortish)',
+    muscleGroup: 'back',
+    cues: [
+      "Gavdani tik tuting, orqa va belni to'g'ri ushlang, tizzalar yengil bukilgan bo'lsin.",
+      "Dastakni qorin pastiga qarab torting, tirsaklar tanaga yaqin harakatlansin.",
+      "Harakat oxirida kuraklarni qattiq siqib 1 soniya ushlang."
+    ],
+    mistakes: [
+      "Haddan tashqari orqaga va oldinga mayatnik kabi chayqalish.",
+      "Yelkalarni quloqqa tortib ko'tarib olish."
+    ],
+    youtubeQuery: 'Jeff Nippard Seated Cable Row proper form',
+    youtubeId: 'GZbfZ033f74',
+    shortsQuery: 'Jeff Nippard seated cable row form shorts #shorts'
+  },
+  {
+    id: 'dumbbell-shoulder-press',
+    name: 'Seated Dumbbell Shoulder Press',
+    nameUz: 'Dumbbell Shoulder Press (Gantel bilan yelka)',
+    muscleGroup: 'shoulders',
+    cues: [
+      "Skameykaga suyangan holda, gantellarni quloq balandligidan boshlab tepaga ko'taring.",
+      "Tirsaklarni to'liq yonboshga emas, 15-30° oldinga (scapular plane) yo'naltiring.",
+      "Tepada gantellarni bir-biriga urishtirmang."
+    ],
+    mistakes: [
+      "Belni qavariq qilib skameykadan uzish.",
+      "Tirsaklarni orqaga yoyib yelkani zo'riqtirish."
+    ],
+    youtubeQuery: 'Jeff Nippard Dumbbell Shoulder Press proper form',
+    youtubeId: 'qEwKCR5JCog',
+    shortsQuery: 'Jeff Nippard dumbbell shoulder press form shorts #shorts'
+  },
+  {
+    id: 'triceps-pushdowns',
+    name: 'Cable Triceps Pushdown',
+    nameUz: 'Triceps Pushdowns (Blokda triceps)',
+    muscleGroup: 'arms',
+    cues: [
+      "Tirsaklarni qovurg'alarga mahkam tirang va butun harakat davomida qimirlatmang.",
+      "Arqon yoki dastakni pastga to'liq yozib, tricepsni qattiq siqing.",
+      "Sekin qaytaring (90 gradus burchakkacha)."
+    ],
+    mistakes: [
+      "Tirsaklarni harakat bilan birga oldinga-orqaga tebratish.",
+      "Gavda og'irligi bilan blok ustiga yotib olish."
+    ],
+    youtubeQuery: 'Jeff Nippard The Best Way To Build Bigger Triceps',
+    youtubeId: '2-LAMcpzODU',
+    shortsQuery: 'Jeff Nippard tricep pushdown form shorts #shorts'
+  },
+  {
+    id: 'lateral-raises',
+    name: 'Dumbbell Lateral Raises',
+    nameUz: 'Lateral Raises (Gantellarni yonga ko‘tarish)',
+    muscleGroup: 'shoulders',
+    cues: [
+      "Gantellarni to'g'ridan-to'g'ri yonga emas, 15-30° oldinga yo'naltirib ko'taring.",
+      "Tirsaklar biroz bukilgan bo'lsin, yelka balandligigacha ko'taring.",
+      "Harakatni tanani siltamasdan, sof yelka kuchi bilan bajaring."
+    ],
+    mistakes: [
+      "Og'ir tosh olib, butun gavda bilan siltanish.",
+      "Trapetsiyani ko'tarib yelkani qisib olish."
+    ],
+    youtubeQuery: 'Jeff Nippard The Most Effective Way To Lateral Raise',
+    youtubeId: '3VcKaXpzqRo',
+    shortsQuery: 'Jeff Nippard lateral raises form shorts #shorts'
+  },
+  {
+    id: 'seated-calf-raises',
+    name: 'Seated Calf Raises',
+    nameUz: 'Seated Calf Raises (O‘tirib boldir ko‘tarish)',
+    muscleGroup: 'legs',
+    cues: [
+      "Oyoq uchlarini platformaga qo'ying, tovonni imkon qadar pastga tushirib to'liq cho'zing.",
+      "Oyoq uchi bilan kuchli itarib, yuqorida 1-2 soniya to'xtab turing.",
+      "Harakatni sakratmasdan (bounce qilmasdan) silliq bajaring."
+    ],
+    mistakes: [
+      "Pastda va yuqorida to'xtamasdan sakrab tez-tez qilish.",
+      "Yarim amplituda bilan ishlash."
+    ],
+    youtubeQuery: 'Jeff Nippard How To Grow Calves Science',
+    youtubeId: 'gwLzMX30VU0',
+    shortsQuery: 'Jeff Nippard calf raise form shorts #shorts'
+  },
+  {
+    id: 'planks',
+    name: 'Planks',
+    nameUz: 'Planks (Planka mashqi)',
+    muscleGroup: 'core',
+    cues: [
+      "Tirsaklar to'g'ri yelkalar ostida bo'lsin.",
+      "Qorin va dumbani qattiq qisib, tanani to'g'ri chiziqda (hollow body) ushlang.",
+      "Bir maromda nafas oling, nafasni ushlab qolmang."
+    ],
+    mistakes: [
+      "Belni pastga osiltirish yoki dumbani haddan tashqari ko'tarish.",
+      "Boshni pastga osiltirib bo'yinni toliqtirish."
+    ],
+    youtubeQuery: 'Jeff Nippard The Best Way To Train Abs Core',
+    youtubeId: 'ASdvN_XEl_c',
+    shortsQuery: 'Jeff Nippard plank form shorts #shorts'
+  },
+  {
+    id: 'dumbbell-shrugs',
+    name: 'Dumbbell Shrugs',
+    nameUz: 'Dumbbell Shrugs (Gantel bilan trapetsiya)',
+    muscleGroup: 'back',
+    cues: [
+      "Gantellarni ikki yonda ushlang, yelkalarni to'g'ridan-to'g'ri quloqlar tomon ko'taring.",
+      "Tepada 1-2 soniya qattiq qisib turing.",
+      "Sekin pastga tushirib, trapetsiyani to'liq cho'zing."
+    ],
+    mistakes: [
+      "Yelkalarni aylanma harakatlantirish (rotatsiya bo'g'im uchun zararli).",
+      "Boshni oldinga cho'zib olish."
+    ],
+    youtubeQuery: 'Jeff Nippard Shrugs proper form',
+    youtubeId: 'b_b9b7H1qE0',
+    shortsQuery: 'Jeff Nippard dumbbell shrugs form shorts #shorts'
+  },
+
+  // DAY 2 EXERCISES
+  {
+    id: 'deadlifts',
+    name: 'Barbell Deadlift',
+    nameUz: 'Deadlifts (Stanovaya tyaga)',
+    muscleGroup: 'back',
+    cues: [
+      "Shtanga to'g'ridan-to'g'ri oyoq o'rtasida bo'lsin, boldir shtangaga deyarli tegib turadi.",
+      "Belni qat'iy tekis ushlang, ko'krakni oching, kuraklarni orqaga bosing.",
+      "Harakatni oyoqlar bilan yerni itarish orqali boshlang (press the floor away)."
+    ],
+    mistakes: [
+      "Dumaloq bel (umurtqa uchun juda xavfli!).",
+      "Shtangani tanadan uzoqlashtirib ko'tarish."
+    ],
+    youtubeQuery: 'Jeff Nippard How To Deadlift With Perfect Technique',
+    youtubeId: 'op9kVnSso6Q',
+    shortsQuery: 'Jeff Nippard deadlift form shorts #shorts'
+  },
+  {
+    id: 'lat-pulldowns',
+    name: 'Lat Pulldowns',
+    nameUz: 'Lat Pulldowns (Blokni ko‘krakka tortish)',
+    muscleGroup: 'back',
+    cues: [
+      "Dastakni yelka kengligidan 1.5 baravar kengroq ushlang.",
+      "Gavdani 10-15° orqaga egib, tirsaklarni pastga va orqaga yo'naltiring.",
+      "Tortish paytida ko'krakni dastak sari oching."
+    ],
+    mistakes: [
+      "Haddan tashqari orqaga yotib tanani silkitish.",
+      "Dastakni qorin tomon juda pastga tortish."
+    ],
+    youtubeQuery: 'Jeff Nippard The Smartest Way To Lat Pulldown',
+    youtubeId: 'CAwf7n6Luuc',
+    shortsQuery: 'Jeff Nippard lat pulldown form shorts #shorts'
+  },
+  {
+    id: 'incline-press',
+    name: 'Incline Dumbbell / Barbell Press',
+    nameUz: 'Incline Press (Qiya skameykada ko‘tarish)',
+    muscleGroup: 'chest',
+    cues: [
+      "Skameyka qiyaligi 30 daraja atrofida bo'lishi maqbul.",
+      "Pastga tushirganda ko'krak yuqori qismini yaxshilab cho'zing.",
+      "Tirsaklarni 45-60 gradusda ushlang."
+    ],
+    mistakes: [
+      "Skameykanni 60 gradusdan ortiq tik qilib qo'yish.",
+      "Og'irlikni nazoratsiz tez tashlab yuborish."
+    ],
+    youtubeQuery: 'Jeff Nippard Incline Dumbbell Press technique',
+    youtubeId: '8iPEnn-ltC8',
+    shortsQuery: 'Jeff Nippard incline press form shorts #shorts'
+  },
+  {
+    id: 'biceps-curls',
+    name: 'Barbell / Dumbbell Biceps Curls',
+    nameUz: 'Biceps Curls (Bicepsga ko‘tarish)',
+    muscleGroup: 'arms',
+    cues: [
+      "Tirsaklar tananing ikki yoniga mahkamlansin va harakatlanmasin.",
+      "Faqat tirsak bo'g'imini buking, tepada 1 soniya qattiq siqing.",
+      "Pastga tushish 2-3 soniya davom etsin."
+    ],
+    mistakes: [
+      "Bel orqali chayqalib inersiya bilan ko'tarish.",
+      "Tirsaklarni oldinga ko'tarib yelkaga yukni o'tkazish."
+    ],
+    youtubeQuery: 'Jeff Nippard The Smartest Way To Build Bigger Biceps',
+    youtubeId: 'ykJmrZ5v0Oo',
+    shortsQuery: 'Jeff Nippard bicep curl form shorts #shorts'
+  },
+  {
+    id: 'hammer-curls',
+    name: 'Dumbbell Hammer Curls',
+    nameUz: 'Hammer Curls (Bolg‘a mashqi)',
+    muscleGroup: 'arms',
+    cues: [
+      "Gantellarni kaftlar bir-biriga qaragan holda (neytral) ushlang.",
+      "Bu mashq brachialis va bilak mushaklarini kuchli rivojlantiradi.",
+      "Gavdani qimirlatmasdan, nazorat bilan ko'taring."
+    ],
+    mistakes: [
+      "Tirsaklarni harakat davomida oldinga siltash.",
+      "Haddan tashqari tez tushirish."
+    ],
+    youtubeQuery: 'Jeff Nippard Hammer Curls technique',
+    youtubeId: 'TwD-YGVP4Bk',
+    shortsQuery: 'Jeff Nippard hammer curls form shorts #shorts'
+  },
+  {
+    id: 'reverse-fly',
+    name: 'Dumbbell / Cable Reverse Fly',
+    nameUz: 'Reverse Fly (Orqa deltalarga yoyish)',
+    muscleGroup: 'shoulders',
+    cues: [
+      "Oldinga egiling yoki ko'krak bilan skameykaga yoting.",
+      "Tirsaklar biroz bukilgan holda gantellarni yonga va orqaga yoying.",
+      "Harakatni orqa deltalarni his qilgan holda bajaring."
+    ],
+    mistakes: [
+      "Trapetsiya bilan orqa kuraklarni qattiq qisib deltalardan yukni olib qochish.",
+      "Og'ir tosh olib siltanib ko'tarish."
+    ],
+    youtubeQuery: 'Jeff Nippard Rear Delt Fly technique',
+    youtubeId: 'PzsMitRj_gE',
+    shortsQuery: 'Jeff Nippard rear delt fly shorts #shorts'
+  },
+  {
+    id: 'standing-calf-raises',
+    name: 'Standing Calf Raises',
+    nameUz: 'Standing Calf Raises (Tik turib boldir)',
+    muscleGroup: 'legs',
+    cues: [
+      "Tik turgan holda tizzalarni to'g'ri (lekin blokirovka qilmasdan) tuting.",
+      "Oyoq uchi bilan maksimal yuqoriga ko'tarilib, 1-2 soniya to'xtang.",
+      "Pastga to'liq tushib boldirni cho'zing."
+    ],
+    mistakes: [
+      "Tizzalarni bukib oyoq bilan sakrash.",
+      "Pastki cho'zilishni o'tkazib yuborish."
+    ],
+    youtubeQuery: 'Jeff Nippard Calf training science',
+    youtubeId: 'gwLzMX30VU0',
+    shortsQuery: 'Jeff Nippard standing calf raises shorts #shorts'
+  },
+  {
+    id: 'neck-isometrics',
+    name: 'Neck Isometric Holds',
+    nameUz: 'Neck Isometrics (Bo‘yin mashqi)',
+    muscleGroup: 'neck',
+    cues: [
+      "Kaftingizni peshonangizga yoki boshning yon tomoniga qo'ying.",
+      "Boshingiz bilan qo'lingizni itaring, lekin bosh qimirlamasin (izometrik qarshilik).",
+      "10-15 soniya davomida bir maromda kuch bilan ushlab turing."
+    ],
+    mistakes: [
+      "Keskin kuch bilan bo'yinni qisib siltash.",
+      "Nafasni to'xtatib turish."
+    ],
+    youtubeQuery: 'Jeff Nippard Neck training science isometric',
+    youtubeId: 'ASdvN_XEl_c',
+    shortsQuery: 'Jeff Nippard neck workout isometric form shorts #shorts'
+  },
+
+  // DAY 3 EXERCISES
+  {
+    id: 'leg-press',
+    name: 'Leg Press',
+    nameUz: 'Leg Press (Oyoqda platforma itarish)',
+    muscleGroup: 'legs',
+    cues: [
+      "Bel va dumbani o'rindiqqa mahkam yopishtiring.",
+      "Platformani tizzalar 90 gradus bo'lguncha nazorat bilan tushiring.",
+      "Tepadagi harakatda tizzalarni to'liq blokirovka qilib to'g'rilamang!"
+    ],
+    mistakes: [
+      "Tizzalarni oxirigacha qotirib bo'g'imni teskari bukish xavfi.",
+      "Dumbaning o'rindiqdan ko'tarilishi."
+    ],
+    youtubeQuery: 'Jeff Nippard Leg Press mistakes science',
+    youtubeId: 'sPt_b1g_2Hw',
+    shortsQuery: 'Jeff Nippard leg press form shorts #shorts'
+  },
+  {
+    id: 't-bar-rows',
+    name: 'T-Bar Rows',
+    nameUz: 'T-Bar Rows (T-grif orqaga tortish)',
+    muscleGroup: 'back',
+    cues: [
+      "Tizzalarni biroz buking, korpusni 45 gradusda ushlang, bel mutlaqo to'g'ri bo'lsin.",
+      "Dastakni ko'krak/qorin sohasi tomon torting.",
+      "Tepada orqa mushaklarini kuchli qisib, sekin pastga cho'zing."
+    ],
+    mistakes: [
+      "Dumaloq bukri bel bilan tortish.",
+      "Gavdani vertikal qilib faqat qo'l bilan tortish."
+    ],
+    youtubeQuery: 'Jeff Nippard T-Bar Row proper form',
+    youtubeId: 'FWJR5Ve8gkQ',
+    shortsQuery: 'Jeff Nippard t bar row form shorts #shorts'
+  },
+  {
+    id: 'chest-fly',
+    name: 'Dumbbell / Cable Chest Fly',
+    nameUz: 'Chest Fly (Ko‘krakni gantel/blokda yoyish)',
+    muscleGroup: 'chest',
+    cues: [
+      "Tirsaklar harakat davomida biroz bukilgan holatda qotirilgan bo'lsin.",
+      "Qo'llarni ikki yonga yoyib ko'krak mushagini to'liq cho'zing.",
+      "Qaytishda ko'krakni qisib, quchoqlash harakatini bajaring."
+    ],
+    mistakes: [
+      "Tirsaklarni harakat davomida bukib jim/pressga aylantirib yuborish.",
+      "Haddan tashqari chuqur tushib yelka bo'g'imini zo'riqtirish."
+    ],
+    youtubeQuery: 'Jeff Nippard Chest Fly proper form',
+    youtubeId: '8iPEnn-ltC8',
+    shortsQuery: 'Jeff Nippard chest fly form shorts #shorts'
+  },
+  {
+    id: 'triceps-extensions',
+    name: 'Overhead Triceps Extensions',
+    nameUz: 'Triceps Extensions (Bosh ortidan triceps)',
+    muscleGroup: 'arms',
+    cues: [
+      "Gantel yoki arqonni bosh ortidan tushirib tricepsni to'liq cho'zing.",
+      "Tirsaklar yuqoriga qaragan holatda bir joyda mustahkam tursin.",
+      "Faqat bilak bo'g'imini yozib tepaga ko'taring."
+    ],
+    mistakes: [
+      "Tirsaklarni ikki tomonga juda keng yoyib yuborish.",
+      "Belni qavariq qilib orqaga haddan ortiq egilish."
+    ],
+    youtubeQuery: 'Jeff Nippard Overhead Tricep Extension',
+    youtubeId: '2-LAMcpzODU',
+    shortsQuery: 'Jeff Nippard tricep extension form shorts #shorts'
+  },
+  {
+    id: 'cable-lateral-raises',
+    name: 'Cable Lateral Raises',
+    nameUz: 'Cable Lateral Raises (Blokda yelka yonga)',
+    muscleGroup: 'shoulders',
+    cues: [
+      "Blok dastagini pastdan oling, gavdani biroz qiya ushlang.",
+      "Kabel butun harakat davomida yelkada doimiy kuchlanish (tension) beradi.",
+      "Yelka balandligigacha ko'taring va sekin qaytaring."
+    ],
+    mistakes: [
+      "Gavda bilan siltanib ko'tarish.",
+      "Dastakni juda baland ko'tarib trapetsiyaga yuk o'tkazish."
+    ],
+    youtubeQuery: 'Jeff Nippard Cable Lateral Raise proper form',
+    youtubeId: '3VcKaXpzqRo',
+    shortsQuery: 'Jeff Nippard cable lateral raise shorts #shorts'
+  },
+  {
+    id: 'decline-crunches',
+    name: 'Decline Crunches',
+    nameUz: 'Decline Crunches (Qiya skameykada press)',
+    muscleGroup: 'core',
+    cues: [
+      "Oyoqlarni qiya skameykaga mahkamlang.",
+      "Gavdani to'liq emas, faqat qorin mushaklarini siqib umurtqani bukish orqali ko'taring.",
+      "Tepada pressni 1 soniya qisib turing."
+    ],
+    mistakes: [
+      "Bo'yinni qo'l bilan oldinga tortish.",
+      "Bel orqali to'liq ko'tarilib son mushaklariga yukni topshirish."
+    ],
+    youtubeQuery: 'Jeff Nippard Decline Crunch Abs',
+    youtubeId: 'hdng3Nm1x_E',
+    shortsQuery: 'Jeff Nippard decline crunches form shorts #shorts'
+  },
+  {
+    id: 'face-pulls',
+    name: 'Cable Face Pulls',
+    nameUz: 'Face Pulls (Arqonni yuzga tortish)',
+    muscleGroup: 'shoulders',
+    cues: [
+      "Arqonni ko'z balandligiga o'rnating, kaftlar pastga yoki bir-biriga qarasin.",
+      "Arqonni peshona tomon torting, tirsaklar balandda orqaga ketsin.",
+      "Yelka salomatligi va orqa deltalarni rivojlantirish uchun eng zo'r mashq."
+    ],
+    mistakes: [
+      "Arqonni bo'yin yoki ko'krak tomon juda pastga tortish.",
+      "Og'ir tosh bilan gavdani tebratish."
+    ],
+    youtubeQuery: 'Jeff Nippard Face Pulls proper technique',
+    youtubeId: 'rep-qVOkqgk',
+    shortsQuery: 'Jeff Nippard face pulls form shorts #shorts'
+  },
   {
     id: 'push-ups',
     name: 'Push-ups',
     nameUz: 'Otjimaniya (Push-ups)',
     muscleGroup: 'chest',
     cues: [
-      "Jeff Nippard tavsiyasi: Qo'llarni yelkadan biroz kengroq qo'ying va tirsaklarni tanaga nisbatan 45-60 gradusda ushlang.",
+      "Qo'llarni yelkadan biroz kengroq qo'ying va tirsaklarni tanaga nisbatan 45-60 gradusda ushlang.",
       "Tana boshdan tovongacha to'g'ri taxtadek (tekis) bo'lishi shart, dumba va qorinni qattiq qising.",
       "Ko'krak qafasini yerga yaqinlashtirib, ko'krak mushagini to'liq cho'zing va kuch bilan ko'tariling."
     ],
     mistakes: [
-      "Tirsaklarni 90 gradusga yoyib yuborish (bu yelkaga jarohat keltiradi).",
-      "Belni pastga osiltirish yoki dumbani haddan tashqari ko'tarib olish.",
-      "Yarim harakat qilish — to'liq pastga tushib, to'liq ko'tarilish muhim."
+      "Tirsaklarni 90 gradusga yoyib yuborish.",
+      "Belni pastga osiltirish."
     ],
     youtubeQuery: 'Jeff Nippard push ups proper form technique',
-    youtubeId: 'hxmd2G_qH1g'
+    youtubeId: 'hxmd2G_qH1g',
+    shortsQuery: 'Jeff Nippard push ups proper form shorts #shorts'
   },
-  {
-    id: 'bench-press',
-    name: 'Barbell Bench Press',
-    nameUz: 'Shtanga yotib ko‘tarish (Bench Press)',
-    muscleGroup: 'chest',
-    cues: [
-      "Jeff Nippard tavsiyasi: Skameykada yotganda yelka kuraklarini (scapula) orqaga va pastga qisib oling (retraction).",
-      "Oyoqlarni polga mahkam tirab 'leg drive' hosil qiling.",
-      "Shtangani to'g'ri chiziqda emas, pastga tushganda ko'krak uchi sohasiga, ko'tarilayotganda esa yelka tomon biroz qiya (J-curve) yo'nalishda ko'taring."
-    ],
-    mistakes: [
-      "Shtangani ko'krakka urib sakratish (bouncing).",
-      "Dumbani skameykadan uzib ko'tarish.",
-      "Tirsaklarni to'liq qotirib bo'g'imga keraksiz yuk tushirish."
-    ],
-    youtubeQuery: 'Jeff Nippard How To Bench Press with Perfect Technique',
-    youtubeId: 'vcBig73ojpE'
-  },
-  {
-    id: 'incline-dumbbell-press',
-    name: 'Incline Dumbbell Press',
-    nameUz: 'Qiya skameykada gantel ko‘tarish (Incline)',
-    muscleGroup: 'chest',
-    cues: [
-      "Jeff Nippard tavsiyasi: Skameyka burchagini 30 gradus atrofida ushlang (eng yuqori ko'krak aktivatsiyasi uchun).",
-      "Gantellarni pastga tushirganda tirsaklar 45-60 gradusda bo'lsin.",
-      "Tepada gantellarni bir-biriga urishtirmang, zo'riqishni saqlang."
-    ],
-    mistakes: [
-      "Skameykanni 60 gradusdan ortiq tik qilib qo'yish (yelkaga o'tib ketadi).",
-      "Gantellarni shoshilib tez tashlab yuborish."
-    ],
-    youtubeQuery: 'Jeff Nippard Incline Dumbbell Press technique',
-    youtubeId: '8iPEnn-ltC8'
-  },
-  {
-    id: 'chest-dips',
-    name: 'Chest Dips',
-    nameUz: 'Brusda tushib-chiqish (Dips)',
-    muscleGroup: 'chest',
-    cues: [
-      "Jeff Nippard tavsiyasi: Ko'krakka ko'proq yuk tushishi uchun gavdani 15-30 gradus oldinga egib bajaring.",
-      "Tirsaklarni taxminan 90 gradusgacha sekin tushiring.",
-      "Ko'tarilayotganda ko'krak mushaklarini kuchli qisib siqing."
-    ],
-    mistakes: [
-      "Tik turib bajarish (bunda ko'krak emas, faqat triceps ishlaydi).",
-      "Haddan tashqari chuqur tushib yelka bo'g'imini zo'riqtirish."
-    ],
-    youtubeQuery: 'Jeff Nippard Chest Dips proper technique tutorial',
-    youtubeId: '2z8JmcrW-As'
-  },
-
-  // BACK
   {
     id: 'pull-ups',
     name: 'Pull-ups',
     nameUz: 'Turnikda tortilish (Pull-ups)',
     muscleGroup: 'back',
     cues: [
-      "Jeff Nippard tavsiyasi: Turnikni yelka kengligidan biroz kengroq ushlang, boshlanishida kuraklarni pastga torting.",
+      "Turnikni yelka kengligidan biroz kengroq ushlang, boshlanishida kuraklarni pastga torting.",
       "Iyak turnik darajasidan oshguncha ko'krakni turnik sari torting.",
       "Pastga tushganda sekin, to'liq cho'zilib tushing."
     ],
     mistakes: [
       "Oyoqlar bilan silkinib sakrash (kipping).",
-      "Yarim tortilish, pastda to'liq yozilmaslik."
+      "Pastda to'liq cho'zilmaslik."
     ],
     youtubeQuery: 'Jeff Nippard How To Pull Up Perfect Technique',
-    youtubeId: 'eGo4IYlbE5g'
-  },
-  {
-    id: 'lat-pulldown',
-    name: 'Lat Pulldown',
-    nameUz: 'Blokni ko‘krakka tortish (Lat Pulldown)',
-    muscleGroup: 'back',
-    cues: [
-      "Jeff Nippard tavsiyasi: Dastakni yelka kengligidan 1.5 baravar kengroq ushlang.",
-      "Gavdani 10-15 gradus orqaga egib, tirsaklarni to'g'ri pastga va orqaga yo'naltiring.",
-      "Harakatni orqa qanot (lat) mushaklaridan boshlang."
-    ],
-    mistakes: [
-      "Orqaga haddan tashqari yotib, butun gavda bilan chayqalish.",
-      "Dastakni qoringa qadar juda pastga tushirish."
-    ],
-    youtubeQuery: 'Jeff Nippard The Smartest Way To Lat Pulldown',
-    youtubeId: 'CAwf7n6Luuc'
-  },
-  {
-    id: 'barbell-row',
-    name: 'Barbell Row',
-    nameUz: 'Shtangani belga tortish (Barbell Row)',
-    muscleGroup: 'back',
-    cues: [
-      "Jeff Nippard tavsiyasi: Korpusni taxminan 45 gradusda ushlang, bel mutlaqo to'g'ri va qattiq bo'lsin.",
-      "Shtangani kindik sohasi tomon tirsaklar orqali torting.",
-      "Tepada kuraklarni 1 soniya qisib turing."
-    ],
-    mistakes: [
-      "Belni g'oz qilib (bukrib) olish — umurtqa uchun jiddiy xavf!",
-      "Oyoq va gavda bilan siltanib ko'tarish."
-    ],
-    youtubeQuery: 'Jeff Nippard The Most Effective Way To Barbell Row',
-    youtubeId: 'FWJR5Ve8gkQ'
-  },
-  {
-    id: 'deadlift',
-    name: 'Barbell Deadlift',
-    nameUz: 'Stanovaya tyaga (Deadlift)',
-    muscleGroup: 'back',
-    cues: [
-      "Jeff Nippardning 5 qoidasi: Shtanga to'g'ridan-to'g'ri oyoq o'rtasida bo'lsin, boldir shtangadan 2-3 sm masofada turadi.",
-      "Harakatni oyoqlar bilan yerni itarish orqali boshlang (press the floor away).",
-      "Shtanga butun yo'l davomida boldir va songa yopishib harakatlanishi shart."
-    ],
-    mistakes: [
-      "Dumaloq bel bilan ko'tarish.",
-      "Shtangani tanadan uzoqlashtirish."
-    ],
-    youtubeQuery: 'Jeff Nippard How To Deadlift With Perfect Technique',
-    youtubeId: 'op9kVnSso6Q'
-  },
-
-  // LEGS
-  {
-    id: 'barbell-squat',
-    name: 'Barbell Back Squat',
-    nameUz: 'Shtanga bilan o‘tirib-turish (Squats)',
-    muscleGroup: 'legs',
-    cues: [
-      "Jeff Nippard tavsiyasi: Oyoqlarni yelka kengligida qo'ying, oyoq barmoqlari 15-30 gradus tashqariga qarasin.",
-      "O'tirishda tizzalar oyoq uchi yo'nalishida ketsin, tovonlar erga mahkamlansin.",
-      "Chuqurlik: kamida sonlar polga parallel bo'lguncha tushing."
-    ],
-    mistakes: [
-      "Tizzalarning ichkariga qulashi (valgus).",
-      "Tovonning yerdan uzilib qolishi.",
-      "Oldinga haddan tashqari egilib ketish."
-    ],
-    youtubeQuery: 'Jeff Nippard How To Get A Huge Squat With Perfect Technique',
-    youtubeId: 'zoW1Wlq67nE'
-  },
-  {
-    id: 'leg-press',
-    name: 'Leg Press',
-    nameUz: 'Oyoqda platforma itarish (Leg Press)',
-    muscleGroup: 'legs',
-    cues: [
-      "Jeff Nippard tavsiyasi: Oyoqlarni platforma o'rtasiga qo'ying, dumbani o'rindiqqa mahkam bosing.",
-      "Platformani tizzalar 90 gradus burchak hosil qilguncha nazorat bilan tushiring.",
-      "Itarganda tizzalarni oxirigacha blokirovka qilib to'g'rilamang!"
-    ],
-    mistakes: [
-      "Tepadagi eng xavfli xato: tizzani to'liq qotirib, teskariga sinish xavfini keltirib chiqarish.",
-      "Dumbaning o'rindiqdan ko'tarilib ketishi."
-    ],
-    youtubeQuery: 'Jeff Nippard Leg Press mistakes science',
-    youtubeId: 'sPt_b1g_2Hw'
-  },
-  {
-    id: 'romanian-deadlift',
-    name: 'Romanian Deadlift (RDL)',
-    nameUz: 'Rumincha tyaga (Son orqasi / RDL)',
-    muscleGroup: 'legs',
-    cues: [
-      "Jeff Nippard tavsiyasi: Tizzalarni biroz bukilgan holatda mahkamlang (qimirlatmasdan).",
-      "Harakat dumbani orqaga cho'zish orqali bajariladi (hip hinge).",
-      "Shtanga oyoq bo'ylab sirg'anib tushadi, son orqasi to'liq cho'zilguncha tushiriladi."
-    ],
-    mistakes: [
-      "Prisedaniyaga o'xshatib tizzani ko'p bukish.",
-      "Belni egib shtangani yerga tekkizishga urinish."
-    ],
-    youtubeQuery: 'Jeff Nippard Romanian Deadlift technique RDL',
-    youtubeId: 'JCXUYuzwNrM'
-  },
-
-  // SHOULDERS
-  {
-    id: 'overhead-press',
-    name: 'Overhead Press (OHP)',
-    nameUz: 'Shtangani tepaga ko‘tarish (Military Press)',
-    muscleGroup: 'shoulders',
-    cues: [
-      "Jeff Nippard tavsiyasi: Tik turing, dumba va qorinni qattiq siqib tanani mustahkamlang.",
-      "Shtanga to'g'ri vertikal chiziqda bosh ustiga ko'tarilsin.",
-      "Shtanga peshonadan o'tgach, boshni biroz oldinga keltirib to'liq yozing."
-    ],
-    mistakes: [
-      "Orqani qavariq qilib orqaga egilish (bel og'rig'iga olib keladi).",
-      "Tizzalar bilan siltab sakrash."
-    ],
-    youtubeQuery: 'Jeff Nippard How To Overhead Press Military Press',
-    youtubeId: '2yjwXTZQDDI'
-  },
-  {
-    id: 'lateral-raises',
-    name: 'Dumbbell Lateral Raises',
-    nameUz: 'Gantellarni yonga ko‘tarish (Mahi)',
-    muscleGroup: 'shoulders',
-    cues: [
-      "Jeff Nippard tavsiyasi: Gantellarni to'g'ridan-to'g'ri yonga emas, 15-30 gradus oldinga (scapular plane) ko'taring.",
-      "Tirsaklar yengil bukilgan bo'lsin, tirsak qo'l kaftidan pastda qolmasin.",
-      "Yelka balandligigacha ko'taring va 1 soniya ushlab turing."
-    ],
-    mistakes: [
-      "Og'ir tosh olib butun gavda bilan chayqalish.",
-      "Trapetsiya mushagini ko'tarib yelkani qisib olish."
-    ],
-    youtubeQuery: 'Jeff Nippard The Most Effective Way To Lateral Raise',
-    youtubeId: '3VcKaXpzqRo'
-  },
-
-  // ARMS
-  {
-    id: 'bicep-curl',
-    name: 'Barbell / EZ-Bar Curl',
-    nameUz: 'Shtanga bilan bicep ko‘tarish',
-    muscleGroup: 'arms',
-    cues: [
-      "Jeff Nippard tavsiyasi: Tirsaklarni tanaga mahkam yopishtirib, oldinga-orqaga tebranishdan saqlaning.",
-      "Ko'tarishda faqat bicep qisqarsin, tepada 1 soniya qattiq siqing.",
-      "Pastga tushish 2-3 soniya davom etsin (eccentric fazani nazorat qiling)."
-    ],
-    mistakes: [
-      "Bel orqali chayqalib inersiya bilan ko'tarish.",
-      "Tirsaklarni oldinga ko'tarib yukni yelkaga o'tkazish."
-    ],
-    youtubeQuery: 'Jeff Nippard The Smartest Way To Build Bigger Biceps',
-    youtubeId: 'ykJmrZ5v0Oo'
-  },
-  {
-    id: 'tricep-pushdown',
-    name: 'Cable Tricep Pushdown',
-    nameUz: 'Blokda tricepsni pastga yozish',
-    muscleGroup: 'arms',
-    cues: [
-      "Jeff Nippard tavsiyasi: Tirsaklarni qovurg'alarga mahkam tirang va pastga to'liq yozing.",
-      "Arqon bilan bajarganda, pastda ikki chetga ochib tricepsni maksimal qising.",
-      "Qo'l 90 gradusga yetguncha sekin qaytaring."
-    ],
-    mistakes: [
-      "Tirsaklarni harakat davomida qanot kabi ochib yuborish.",
-      "Gavda og'irligi bilan blok ustiga yotib olish."
-    ],
-    youtubeQuery: 'Jeff Nippard The Best Way To Build Bigger Triceps',
-    youtubeId: '2-LAMcpzODU'
-  },
-
-  // CORE / ABS
-  {
-    id: 'plank',
-    name: 'Plank',
-    nameUz: 'Planka (Plank)',
-    muscleGroup: 'core',
-    cues: [
-      "Jeff Nippard tavsiyasi: Faqat turish emas, qorin va dumbani faol tarzda qattiq siqib 'hollow body' pozitsiyasini oling.",
-      "Tirsaklar to'g'ri yelkalar ostida bo'lsin.",
-      "Nafasni ushlab qolmang, bir maromda chuqur nafas oling."
-    ],
-    mistakes: [
-      "Belni pastga osiltirib yuborish.",
-      "Boshni haddan tashqari ko'tarish yoki osiltirish."
-    ],
-    youtubeQuery: 'Jeff Nippard The Best Way To Train Abs Core',
-    youtubeId: 'ASdvN_XEl_c'
-  },
-  {
-    id: 'hanging-leg-raise',
-    name: 'Hanging Leg / Knee Raise',
-    nameUz: 'Turnikda oyoq/tizza ko‘tarish',
-    muscleGroup: 'core',
-    cues: [
-      "Jeff Nippard tavsiyasi: Turnikda osilganda tebranmaslik uchun har bir takror oldidan to'liq to'xtang.",
-      "Tizzalarni yoki tekis oyoqlarni ko'tarayotganda tos suyagini (pelvis) yuqoriga buking.",
-      "Faqat oyoqni emas, qorin mushagini siqishga diqqat qarating."
-    ],
-    mistakes: [
-      "Inersiya bilan siltanib tebranish.",
-      "Tos suyagini bukmasdan faqat son mushagi orqali ko'tarish."
-    ],
-    youtubeQuery: 'Jeff Nippard Hanging Leg Raises Abs Form',
-    youtubeId: 'hdng3Nm1x_E'
+    youtubeId: 'eGo4IYlbE5g',
+    shortsQuery: 'Jeff Nippard pull ups form shorts #shorts'
   }
 ];
