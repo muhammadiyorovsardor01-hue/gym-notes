@@ -70,45 +70,88 @@ export const WorkoutActive: React.FC<WorkoutActiveProps> = ({
   };
 
   const handleAddSet = (exIdx: number) => {
-    const updated = { ...workout };
-    const we = updated.exercises[exIdx];
+    if (!workout) return;
+    const we = workout.exercises[exIdx];
     const last = we.sets[we.sets.length - 1];
-    we.sets.push({
+    const newSet: ExerciseSet = {
       id: `set-${Date.now()}-${Math.random()}`,
       setNumber: we.sets.length + 1,
       weight: last ? last.weight : 20,
       reps: last ? last.reps : 10,
       completed: false,
       type: 'regular',
-    });
+    };
+
+    const updated: WorkoutSession = {
+      ...workout,
+      exercises: workout.exercises.map((ex, eIdx) => {
+        if (eIdx !== exIdx) return ex;
+        return {
+          ...ex,
+          sets: [...ex.sets, newSet],
+        };
+      }),
+    };
     onUpdateWorkout(updated);
   };
 
   const handleRemoveSet = (exIdx: number, setIdx: number) => {
-    const updated = { ...workout };
-    updated.exercises[exIdx].sets.splice(setIdx, 1);
-    updated.exercises[exIdx].sets.forEach((s, i) => { s.setNumber = i + 1; });
+    if (!workout) return;
+    const updated: WorkoutSession = {
+      ...workout,
+      exercises: workout.exercises.map((ex, eIdx) => {
+        if (eIdx !== exIdx) return ex;
+        const newSets = ex.sets.filter((_, sIdx) => sIdx !== setIdx).map((s, i) => ({
+          ...s,
+          setNumber: i + 1,
+        }));
+        return {
+          ...ex,
+          sets: newSets,
+        };
+      }),
+    };
     onUpdateWorkout(updated);
   };
 
   const handleUpdateSet = (exIdx: number, setIdx: number, field: keyof ExerciseSet, value: unknown) => {
-    const updated = { ...workout };
-    const target = updated.exercises[exIdx].sets[setIdx];
-    if (field === 'completed' && value === true && !target.completed) onTriggerRestTimer();
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (target as any)[field] = value;
+    if (!workout) return;
+    const target = workout.exercises[exIdx]?.sets[setIdx];
+    if (field === 'completed' && value === true && target && !target.completed) {
+      onTriggerRestTimer();
+    }
+
+    const updated: WorkoutSession = {
+      ...workout,
+      exercises: workout.exercises.map((ex, eIdx) => {
+        if (eIdx !== exIdx) return ex;
+        return {
+          ...ex,
+          sets: ex.sets.map((s, sIdx) => {
+            if (sIdx !== setIdx) return s;
+            return {
+              ...s,
+              [field]: value,
+            };
+          }),
+        };
+      }),
+    };
     onUpdateWorkout(updated);
   };
 
   const handleAdjust = (exIdx: number, setIdx: number, field: 'weight' | 'reps', delta: number) => {
-    const cur = workout.exercises[exIdx].sets[setIdx][field] || 0;
+    const cur = workout?.exercises[exIdx]?.sets[setIdx]?.[field] || 0;
     handleUpdateSet(exIdx, setIdx, field, Math.max(0, cur + delta));
   };
 
   const handleRemoveExercise = (exIdx: number) => {
+    if (!workout) return;
     if (confirm("Mashqni olib tashlamoqchimisiz?")) {
-      const updated = { ...workout };
-      updated.exercises.splice(exIdx, 1);
+      const updated: WorkoutSession = {
+        ...workout,
+        exercises: workout.exercises.filter((_, eIdx) => eIdx !== exIdx),
+      };
       onUpdateWorkout(updated);
     }
   };

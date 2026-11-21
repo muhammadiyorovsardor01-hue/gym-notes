@@ -34,31 +34,43 @@ import { InstallShortcutBanner } from './components/InstallShortcutBanner';
 
 export function App() {
   const [currentTab, setCurrentTab] = useState<TabType>('workout');
-  const [exercises, setExercises] = useState<ExerciseItem[]>([]);
-  const [templates, setTemplates] = useState<WorkoutTemplate[]>([]);
-  const [activeWorkout, setActiveWorkout] = useState<WorkoutSession | null>(null);
-  const [history, setHistory] = useState<WorkoutSession[]>([]);
-  const [personalRecords, setPersonalRecords] = useState<Record<string, PersonalRecord>>({});
+  const [exercises, setExercises] = useState<ExerciseItem[]>(() => getExercises());
+  const [templates, setTemplates] = useState<WorkoutTemplate[]>(() => getWorkoutTemplates());
+  const [activeWorkout, setActiveWorkout] = useState<WorkoutSession | null>(() => getActiveWorkout());
+  const [history, setHistory] = useState<WorkoutSession[]>(() => getWorkoutHistory());
+  const [personalRecords, setPersonalRecords] = useState<Record<string, PersonalRecord>>(() => getPersonalRecords());
+  const [restDuration] = useState<number>(() => getDefaultRestDuration());
 
   // Modals state
   const [isSelectorOpen, setIsSelectorOpen] = useState(false);
   const [targetDayIdForExercise, setTargetDayIdForExercise] = useState<string | null>(null);
   const [techniqueExercise, setTechniqueExercise] = useState<ExerciseItem | null>(null);
   const [isRestTimerOpen, setIsRestTimerOpen] = useState(false);
-  const [restDuration, setRestDuration] = useState(90);
   const [finishedSession, setFinishedSession] = useState<WorkoutSession | null>(null);
 
-  // Load persisted state on mount
+  // Auto-sync active workout to localStorage whenever it changes
   useEffect(() => {
-    setExercises(getExercises());
-    setTemplates(getWorkoutTemplates());
-    setActiveWorkout(getActiveWorkout());
-    setHistory(getWorkoutHistory());
-    setPersonalRecords(getPersonalRecords());
-    setRestDuration(getDefaultRestDuration());
-  }, []);
+    saveActiveWorkout(activeWorkout);
+  }, [activeWorkout]);
 
-  // Sync active workout to localStorage whenever it changes (guarantees NO data loss on page refresh)
+  // Handle sudden mobile browser minimize or tab refresh
+  useEffect(() => {
+    const handleSave = () => {
+      if (activeWorkout) {
+        saveActiveWorkout(activeWorkout);
+      }
+    };
+    window.addEventListener('beforeunload', handleSave);
+    window.addEventListener('pagehide', handleSave);
+    document.addEventListener('visibilitychange', handleSave);
+    return () => {
+      window.removeEventListener('beforeunload', handleSave);
+      window.removeEventListener('pagehide', handleSave);
+      document.removeEventListener('visibilitychange', handleSave);
+    };
+  }, [activeWorkout]);
+
+  // Sync active workout to state and localStorage (immutable)
   const handleUpdateActiveWorkout = (workout: WorkoutSession) => {
     setActiveWorkout(workout);
     saveActiveWorkout(workout);
