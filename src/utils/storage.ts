@@ -1,6 +1,5 @@
 import type { WorkoutSession, ExerciseItem, PersonalRecord, WorkoutTemplate } from '../types';
 import { DEFAULT_EXERCISES } from '../data/defaultExercises';
-import { DEFAULT_TEMPLATES } from '../data/defaultTemplates';
 
 const STORAGE_KEYS = {
   ACTIVE_WORKOUT: 'gymnotes_active_workout',
@@ -156,12 +155,10 @@ export const getWorkoutTemplates = (): WorkoutTemplate[] => {
     if (saved) {
       return JSON.parse(saved);
     }
-    // Initialize with default templates
-    localStorage.setItem(STORAGE_KEYS.TEMPLATES_V2, JSON.stringify(DEFAULT_TEMPLATES));
-    return DEFAULT_TEMPLATES;
+    return [];
   } catch (e) {
     console.error('Error reading templates', e);
-    return DEFAULT_TEMPLATES;
+    return [];
   }
 };
 
@@ -177,9 +174,9 @@ export const saveAllWorkoutTemplates = (templates: WorkoutTemplate[]): WorkoutTe
 
 export const resetWorkoutTemplatesToDefault = (): WorkoutTemplate[] => {
   try {
-    localStorage.setItem(STORAGE_KEYS.TEMPLATES_V2, JSON.stringify(DEFAULT_TEMPLATES));
-    return DEFAULT_TEMPLATES;
+    localStorage.setItem(STORAGE_KEYS.TEMPLATES_V2, JSON.stringify([]));
+    return [];
   } catch (e) {
-    return DEFAULT_TEMPLATES;
+    return [];
   }
 };

@@ -16,8 +16,7 @@ import {
   getPersonalRecords,
   getDefaultRestDuration,
   getWorkoutTemplates,
-  saveAllWorkoutTemplates,
-  resetWorkoutTemplatesToDefault
+  saveAllWorkoutTemplates
 } from './utils/storage';
 
 import { Header } from './components/Header';
@@ -69,14 +68,6 @@ export function App() {
   const handleUpdateTemplates = (updated: WorkoutTemplate[]) => {
     setTemplates(updated);
     saveAllWorkoutTemplates(updated);
-  };
-
-  // Reset templates to default
-  const handleResetTemplates = () => {
-    if (confirm("Kunlik dasturlarni (Day 1, 2, 3) asl holatiga qaytarmoqchimisiz?")) {
-      const reset = resetWorkoutTemplatesToDefault();
-      setTemplates(reset);
-    }
   };
 
   // Open exercise selector specifically to add an exercise into a Day (e.g. Day 1)
@@ -341,7 +332,6 @@ export function App() {
             onStartTemplate={handleStartTemplate}
             onOpenTechnique={(ex) => setTechniqueExercise(ex)}
             onUpdateTemplates={handleUpdateTemplates}
-            onResetTemplates={handleResetTemplates}
             onOpenAddExerciseToDay={handleOpenAddExerciseToDay}
           />
         )}
