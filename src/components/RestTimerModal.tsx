@@ -10,6 +10,7 @@ interface RestTimerProps {
   exerciseName?: string;
   difficultyLabel?: string;
   difficulty?: ExerciseDifficulty;
+  soundEnabled?: boolean;
   isOpen: boolean;
   onClose: () => void;
 }
@@ -26,6 +27,7 @@ export const RestTimer: React.FC<RestTimerProps> = ({
   exerciseName,
   difficultyLabel,
   difficulty = 'medium',
+  soundEnabled = true,
   isOpen,
   onClose,
 }) => {
@@ -35,6 +37,11 @@ export const RestTimer: React.FC<RestTimerProps> = ({
 
   const endTimeRef = useRef<number | null>(null);
   const hasPlayedSoundRef = useRef(false);
+  const soundEnabledRef = useRef(soundEnabled);
+
+  useEffect(() => {
+    soundEnabledRef.current = soundEnabled;
+  }, [soundEnabled]);
 
   // Sync and restart timer on open or new trigger
   useEffect(() => {
@@ -64,7 +71,7 @@ export const RestTimer: React.FC<RestTimerProps> = ({
       if (remaining === 0) {
         if (!hasPlayedSoundRef.current) {
           hasPlayedSoundRef.current = true;
-          playTimerCompletionSound();
+          playTimerCompletionSound(soundEnabledRef.current);
         }
         setIsRunning(false);
         endTimeRef.current = null;

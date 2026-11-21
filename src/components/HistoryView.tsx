@@ -1,17 +1,23 @@
 import React, { useState } from 'react';
-import type { WorkoutSession, PersonalRecord } from '../types';
-import { Calendar, Clock, Flame, Trophy, Trash2, ChevronDown, ChevronUp } from 'lucide-react';
+import type { WorkoutSession, PersonalRecord, WeightUnit } from '../types';
+import { Calendar, Clock, Flame, Trophy, Trash2, ChevronDown, ChevronUp, Cloud } from 'lucide-react';
 
 interface HistoryViewProps {
   history: WorkoutSession[];
   personalRecords: Record<string, PersonalRecord>;
   onDeleteWorkout: (id: string) => void;
+  weightUnit?: WeightUnit;
+  isSignedIn?: boolean;
+  onOpenAccount?: () => void;
 }
 
 export const HistoryView: React.FC<HistoryViewProps> = ({
   history,
   personalRecords,
   onDeleteWorkout,
+  weightUnit = 'kg',
+  isSignedIn = false,
+  onOpenAccount,
 }) => {
   const [activeTab, setActiveTab] = useState<'history' | 'records'>('history');
   const [expandedId, setExpandedId] = useState<string | null>(null);
@@ -22,6 +28,23 @@ export const HistoryView: React.FC<HistoryViewProps> = ({
 
   return (
     <div className="space-y-4 pb-24">
+      {/* Subtle cloud backup prompt if not signed in */}
+      {!isSignedIn && onOpenAccount && (
+        <button
+          type="button"
+          onClick={onOpenAccount}
+          className="w-full bg-[#12141c] border border-[#222636] hover:border-emerald-500/40 px-3.5 py-2.5 rounded-xl flex items-center justify-between gap-2 text-left transition-colors"
+        >
+          <span className="flex items-center gap-2 text-[11px] text-slate-300 truncate">
+            <Cloud size={14} className="text-emerald-400 flex-shrink-0" />
+            <span className="truncate">Tarixingiz faqat shu qurilmada saqlangan</span>
+          </span>
+          <span className="text-[11px] font-bold text-emerald-400 flex-shrink-0">
+            Google bulutga ulash →
+          </span>
+        </button>
+      )}
+
       {/* Stats */}
       <div className="grid grid-cols-3 gap-2">
         <div className="bg-[#12141c] border border-[#222636] p-3 rounded-xl text-center">
@@ -31,7 +54,9 @@ export const HistoryView: React.FC<HistoryViewProps> = ({
         <div className="bg-[#12141c] border border-[#222636] p-3 rounded-xl text-center">
           <div className="text-[10px] text-slate-500 font-medium mb-1">Jami tonnaj</div>
           <div className="text-lg font-bold text-amber-400 font-mono-numbers">
-            {totalVolumeAllTime > 1000 ? `${(totalVolumeAllTime / 1000).toFixed(1)}t` : `${totalVolumeAllTime}kg`}
+            {totalVolumeAllTime > 1000
+              ? `${(totalVolumeAllTime / 1000).toFixed(1)}t`
+              : `${totalVolumeAllTime}${weightUnit}`}
           </div>
         </div>
         <div className="bg-[#12141c] border border-[#222636] p-3 rounded-xl text-center">
@@ -83,7 +108,7 @@ export const HistoryView: React.FC<HistoryViewProps> = ({
                       <h3 className="text-sm font-bold text-white">{session.title}</h3>
                       <div className="flex items-center gap-3 text-[10px] text-slate-500 mt-1 font-mono-numbers">
                         {durationMins > 0 && <span className="flex items-center gap-1"><Clock size={11} /> {durationMins} daq</span>}
-                        <span className="text-amber-400 font-semibold flex items-center gap-1"><Flame size={11} /> {session.totalVolume.toLocaleString()} kg</span>
+                        <span className="text-amber-400 font-semibold flex items-center gap-1"><Flame size={11} /> {session.totalVolume.toLocaleString()} {weightUnit}</span>
                         <span>{session.exercises.length} mashq</span>
                       </div>
                     </div>
@@ -102,7 +127,7 @@ export const HistoryView: React.FC<HistoryViewProps> = ({
                               <span key={sIdx} className={`text-[10px] font-mono-numbers px-1.5 py-0.5 rounded border ${
                                 set.completed ? 'bg-[#181b26] border-[#222636] text-slate-300' : 'border-[#1a1d2a] text-slate-600 line-through'
                               }`}>
-                                {set.weight}kg × {set.reps}
+                                {set.weight}{weightUnit} × {set.reps}
                               </span>
                             ))}
                           </div>
@@ -137,7 +162,7 @@ export const HistoryView: React.FC<HistoryViewProps> = ({
                   </div>
                 </div>
                 <div className="text-right font-mono-numbers">
-                  <div className="text-sm font-black text-amber-400">{pr.maxWeight} kg</div>
+                  <div className="text-sm font-black text-amber-400">{pr.maxWeight} {weightUnit}</div>
                   <div className="text-[10px] text-slate-500">{pr.maxRepsAtMaxWeight} reps</div>
                 </div>
               </div>

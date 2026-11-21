@@ -1,5 +1,6 @@
 // Web Audio API chime for Rest Timer completion
-export const playTimerCompletionSound = () => {
+export const playTimerCompletionSound = (enabled = true) => {
+  if (!enabled) return;
   try {
     const AudioContext = window.AudioContext || (window as unknown as { webkitAudioContext: typeof window.AudioContext }).webkitAudioContext;
     if (!AudioContext) return;

@@ -1,23 +1,50 @@
-import { useState, useEffect } from 'react';
-import type { 
-  WorkoutSession, 
-  ExerciseItem, 
+import { useState, useEffect, useRef } from 'react';
+import {
+  onAuthStateChanged,
+  signInWithPopup,
+  signInWithRedirect,
+  getRedirectResult,
+  signOut,
+  type User,
+} from 'firebase/auth';
+import { auth, googleProvider } from './lib/firebase';
+import { applyThemeToDocument } from './data/themes';
+import type {
+  WorkoutSession,
+  ExerciseItem,
   PersonalRecord,
   WorkoutTemplate,
-  ExerciseDifficulty
+  ExerciseDifficulty,
+  UserPreferences,
+  SyncStatus,
+  CloudUserData,
 } from './types';
-import { 
-  getExercises, 
-  saveCustomExercise, 
-  getActiveWorkout, 
-  saveActiveWorkout, 
-  getWorkoutHistory, 
-  saveWorkoutToHistory, 
+import {
+  getExercises,
+  saveCustomExercise,
+  getCustomExercisesOnly,
+  saveCustomExercisesList,
+  getActiveWorkout,
+  saveActiveWorkout,
+  getWorkoutHistory,
+  saveWorkoutToHistory,
+  saveWorkoutHistoryList,
   deleteWorkoutFromHistory,
   getPersonalRecords,
+  savePersonalRecordsMap,
   getWorkoutTemplates,
-  saveAllWorkoutTemplates
+  saveAllWorkoutTemplates,
+  getUserPreferences,
+  saveUserPreferences,
+  isCloudBannerDismissed,
+  dismissCloudBanner,
 } from './utils/storage';
+import {
+  loadCloudData,
+  saveCloudData,
+  mergeCloudAndLocalData,
+  formatFirebaseErrorUz,
+} from './utils/cloudSync';
 import { getExerciseRestInfo } from './utils/restTimer';
 
 import { Header } from './components/Header';
@@ -32,6 +59,8 @@ import { ExercisesLibraryView } from './components/ExercisesLibraryView';
 import { HistoryView } from './components/HistoryView';
 import { TemplatesView } from './components/TemplatesView';
 import { InstallShortcutBanner } from './components/InstallShortcutBanner';
+import { CloudSyncBanner } from './components/CloudSyncBanner';
+import { AccountPersonalizationModal } from './components/AccountPersonalizationModal';
 
 export function App() {
   const [currentTab, setCurrentTab] = useState<TabType>('workout');
@@ -39,7 +68,19 @@ export function App() {
   const [templates, setTemplates] = useState<WorkoutTemplate[]>(() => getWorkoutTemplates());
   const [activeWorkout, setActiveWorkout] = useState<WorkoutSession | null>(() => getActiveWorkout());
   const [history, setHistory] = useState<WorkoutSession[]>(() => getWorkoutHistory());
-  const [personalRecords, setPersonalRecords] = useState<Record<string, PersonalRecord>>(() => getPersonalRecords());
+  const [personalRecords, setPersonalRecords] = useState<Record<string, PersonalRecord>>(() =>
+    getPersonalRecords()
+  );
+  const [preferences, setPreferences] = useState<UserPreferences>(() => getUserPreferences());
+
+  // Auth & Cloud Sync state
+  const [user, setUser] = useState<User | null>(null);
+  const [authLoading, setAuthLoading] = useState(false);
+  const [authError, setAuthError] = useState<string | null>(null);
+  const [syncStatus, setSyncStatus] = useState<SyncStatus>('idle');
+  const [lastSyncedAt, setLastSyncedAt] = useState<number | null>(null);
+  const [isAccountModalOpen, setIsAccountModalOpen] = useState(false);
+  const [cloudBannerDismissed, setCloudBannerDismissed] = useState(() => isCloudBannerDismissed());
 
   // Modals state
   const [isSelectorOpen, setIsSelectorOpen] = useState(false);
@@ -59,9 +100,228 @@ export function App() {
   });
   const [finishedSession, setFinishedSession] = useState<WorkoutSession | null>(null);
 
+  const isHydratingRef = useRef(false);
+  const syncTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const lastCloudSnapshotRef = useRef<string>('');
+
+  // Apply theme immediately on mount and whenever preferences.theme changes
+  useEffect(() => {
+    applyThemeToDocument(preferences.theme);
+  }, [preferences.theme]);
+
+  // Helper to construct current cloud snapshot
+  const buildCurrentCloudData = (): Omit<CloudUserData, 'updatedAt'> => ({
+    templates,
+    history,
+    personalRecords,
+    customExercises: getCustomExercisesOnly(),
+    activeWorkout,
+    preferences,
+  });
+
+  // Check redirect login result & subscribe to Firebase Auth state
+  useEffect(() => {
+    getRedirectResult(auth).catch((err) => {
+      const msg = formatFirebaseErrorUz(err);
+      if (msg) setAuthError(msg);
+    });
+
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      if (!firebaseUser) {
+        setUser(null);
+        setSyncStatus('idle');
+        lastCloudSnapshotRef.current = '';
+        return;
+      }
+
+      setUser(firebaseUser);
+      setAuthError(null);
+      setSyncStatus('syncing');
+      isHydratingRef.current = true;
+
+      try {
+        const cloudData = await loadCloudData(firebaseUser.uid);
+        const localSnapshot: CloudUserData = {
+          templates: getWorkoutTemplates(),
+          history: getWorkoutHistory(),
+          personalRecords: getPersonalRecords(),
+          customExercises: getCustomExercisesOnly(),
+          activeWorkout: getActiveWorkout(),
+          preferences: getUserPreferences(),
+          updatedAt: Date.now(),
+        };
+
+        if (cloudData) {
+          const merged = mergeCloudAndLocalData(localSnapshot, cloudData);
+
+          saveAllWorkoutTemplates(merged.templates);
+          saveWorkoutHistoryList(merged.history);
+          savePersonalRecordsMap(merged.personalRecords);
+          const mergedExercises = saveCustomExercisesList(merged.customExercises);
+          saveActiveWorkout(merged.activeWorkout);
+          saveUserPreferences(merged.preferences);
+
+          setTemplates(merged.templates);
+          setHistory(merged.history);
+          setPersonalRecords(merged.personalRecords);
+          setExercises(mergedExercises);
+          setActiveWorkout(merged.activeWorkout);
+          setPreferences(merged.preferences);
+
+          const mergedCore = {
+            templates: merged.templates,
+            history: merged.history,
+            personalRecords: merged.personalRecords,
+            customExercises: merged.customExercises,
+            activeWorkout: merged.activeWorkout,
+            preferences: merged.preferences,
+          };
+          lastCloudSnapshotRef.current = JSON.stringify(mergedCore);
+          await saveCloudData(firebaseUser.uid, merged);
+        } else {
+          const localCore = {
+            templates: localSnapshot.templates,
+            history: localSnapshot.history,
+            personalRecords: localSnapshot.personalRecords,
+            customExercises: localSnapshot.customExercises,
+            activeWorkout: localSnapshot.activeWorkout,
+            preferences: localSnapshot.preferences,
+          };
+          lastCloudSnapshotRef.current = JSON.stringify(localCore);
+          await saveCloudData(firebaseUser.uid, localSnapshot);
+        }
+
+        setSyncStatus('synced');
+        setLastSyncedAt(Date.now());
+      } catch (err) {
+        setSyncStatus('error');
+        const msg = formatFirebaseErrorUz(err);
+        if (msg) setAuthError(msg);
+      } finally {
+        isHydratingRef.current = false;
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  // Debounced auto-sync whenever data changes while logged in
+  useEffect(() => {
+    if (!user || isHydratingRef.current) return;
+
+    const coreSnapshot = {
+      templates,
+      history,
+      personalRecords,
+      customExercises: getCustomExercisesOnly(),
+      activeWorkout,
+      preferences,
+    };
+    const serialized = JSON.stringify(coreSnapshot);
+    if (serialized === lastCloudSnapshotRef.current) return;
+
+    if (syncTimerRef.current) {
+      clearTimeout(syncTimerRef.current);
+    }
+
+    syncTimerRef.current = setTimeout(async () => {
+      if (!user || isHydratingRef.current) return;
+      setSyncStatus('syncing');
+      try {
+        await saveCloudData(user.uid, {
+          ...coreSnapshot,
+          updatedAt: Date.now(),
+        });
+        lastCloudSnapshotRef.current = serialized;
+        setSyncStatus('synced');
+        setLastSyncedAt(Date.now());
+      } catch (err) {
+        setSyncStatus('error');
+        const msg = formatFirebaseErrorUz(err);
+        if (msg) setAuthError(msg);
+      }
+    }, 700);
+
+    return () => {
+      if (syncTimerRef.current) {
+        clearTimeout(syncTimerRef.current);
+      }
+    };
+  }, [user, templates, history, personalRecords, exercises, activeWorkout, preferences]);
+
+  const handleSignInGoogle = async () => {
+    setAuthLoading(true);
+    setAuthError(null);
+    try {
+      await signInWithPopup(auth, googleProvider);
+    } catch (err) {
+      const code =
+        typeof err === 'object' && err !== null && 'code' in err
+          ? String((err as { code?: unknown }).code || '')
+          : '';
+      if (
+        code === 'auth/popup-blocked' ||
+        code === 'auth/operation-not-supported-in-this-environment'
+      ) {
+        try {
+          await signInWithRedirect(auth, googleProvider);
+          return;
+        } catch (redirectErr) {
+          const msg = formatFirebaseErrorUz(redirectErr);
+          if (msg) setAuthError(msg);
+        }
+      } else {
+        const msg = formatFirebaseErrorUz(err);
+        if (msg) setAuthError(msg);
+      }
+    } finally {
+      setAuthLoading(false);
+    }
+  };
+
+  const handleSignOut = async () => {
+    setAuthError(null);
+    try {
+      await signOut(auth);
+    } catch (err) {
+      const msg = formatFirebaseErrorUz(err);
+      if (msg) setAuthError(msg);
+    }
+  };
+
+  const handleManualSync = async () => {
+    if (!user) return;
+    setSyncStatus('syncing');
+    setAuthError(null);
+    const coreSnapshot = buildCurrentCloudData();
+    try {
+      await saveCloudData(user.uid, {
+        ...coreSnapshot,
+        updatedAt: Date.now(),
+      });
+      lastCloudSnapshotRef.current = JSON.stringify(coreSnapshot);
+      setSyncStatus('synced');
+      setLastSyncedAt(Date.now());
+    } catch (err) {
+      setSyncStatus('error');
+      const msg = formatFirebaseErrorUz(err);
+      if (msg) setAuthError(msg);
+    }
+  };
+
+  const handleUpdatePreferences = (updated: UserPreferences) => {
+    setPreferences(updated);
+    saveUserPreferences(updated);
+  };
+
+  const handleDismissCloudBanner = () => {
+    setCloudBannerDismissed(true);
+    dismissCloudBanner();
+  };
+
   const handleTriggerRestTimer = (exercise: ExerciseItem) => {
     const info = getExerciseRestInfo(exercise);
-    setRestTimer(prev => ({
+    setRestTimer((prev) => ({
       isOpen: true,
       seconds: info.seconds,
       triggerKey: prev.triggerKey + 1,
@@ -141,7 +401,7 @@ export function App() {
     }
 
     const exMap = new Map<string, ExerciseItem>();
-    exercises.forEach(e => exMap.set(e.id, e));
+    exercises.forEach((e) => exMap.set(e.id, e));
 
     const workoutExercises = template.exercises.map((item, exIdx) => {
       const ex = exMap.get(item.exerciseId) || {
@@ -196,7 +456,7 @@ export function App() {
     if (confirm("Haqiqatan ham davom etayotgan mashg'ulotni bekor qilmoqchimisiz?")) {
       setActiveWorkout(null);
       saveActiveWorkout(null);
-      setRestTimer(prev => ({ ...prev, isOpen: false }));
+      setRestTimer((prev) => ({ ...prev, isOpen: false }));
     }
   };
 
@@ -241,7 +501,7 @@ export function App() {
     setActiveWorkout(null);
     saveActiveWorkout(null);
     setFinishedSession(null);
-    setRestTimer(prev => ({ ...prev, isOpen: false }));
+    setRestTimer((prev) => ({ ...prev, isOpen: false }));
 
     // Switch to history tab to view achievements
     setCurrentTab('history');
@@ -250,19 +510,17 @@ export function App() {
   // Handle selecting an exercise from modal
   const handleSelectExerciseFromModal = (exercise: ExerciseItem) => {
     if (targetDayIdForExercise) {
-      // User is adding exercise to a specific Day (e.g. Day 1)
-      const updated = templates.map(t => {
+      const updated = templates.map((t) => {
         if (t.id === targetDayIdForExercise) {
-          // Check if already in this day
-          if (t.exercises.some(e => e.exerciseId === exercise.id)) {
+          if (t.exercises.some((e) => e.exerciseId === exercise.id)) {
             return t;
           }
           return {
             ...t,
             exercises: [
               ...t.exercises,
-              { exerciseId: exercise.id, setsCount: 3, targetReps: '10' }
-            ]
+              { exerciseId: exercise.id, setsCount: 3, targetReps: '10' },
+            ],
           };
         }
         return t;
@@ -273,7 +531,6 @@ export function App() {
       return;
     }
 
-    // Otherwise, add to active workout
     handleAddExerciseToWorkout(exercise);
   };
 
@@ -336,13 +593,26 @@ export function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#090a0f] text-neutral-100 flex flex-col font-sans selection:bg-emerald-500 selection:text-black">
+    <div className="min-h-screen bg-[var(--bg-main)] text-neutral-100 flex flex-col font-sans selection:bg-emerald-500 selection:text-black">
       {/* Top Header */}
-      <Header activeWorkoutCount={activeWorkout ? 1 : 0} />
+      <Header
+        activeWorkoutCount={activeWorkout ? 1 : 0}
+        user={user}
+        syncStatus={syncStatus}
+        onOpenAccount={() => setIsAccountModalOpen(true)}
+      />
 
       {/* Main Content Area */}
       <main className="flex-1 max-w-xl w-full mx-auto p-4 sm:p-5">
         <InstallShortcutBanner />
+
+        {!user && !cloudBannerDismissed && (
+          <CloudSyncBanner
+            onSignInGoogle={handleSignInGoogle}
+            onDismiss={handleDismissCloudBanner}
+            authLoading={authLoading}
+          />
+        )}
 
         {currentTab === 'workout' && (
           <WorkoutActive
@@ -358,6 +628,8 @@ export function App() {
             onOpenTechnique={(ex) => setTechniqueExercise(ex)}
             onTriggerRestTimer={handleTriggerRestTimer}
             previousRecords={personalRecords}
+            weightUnit={preferences.weightUnit}
+            weightStep={preferences.weightStep}
           />
         )}
 
@@ -385,6 +657,9 @@ export function App() {
             history={history}
             personalRecords={personalRecords}
             onDeleteWorkout={handleDeleteWorkout}
+            weightUnit={preferences.weightUnit}
+            isSignedIn={!!user}
+            onOpenAccount={() => setIsAccountModalOpen(true)}
           />
         )}
       </main>
@@ -396,8 +671,9 @@ export function App() {
         exerciseName={restTimer.exerciseName}
         difficulty={restTimer.difficulty}
         difficultyLabel={restTimer.difficultyLabel}
+        soundEnabled={preferences.soundEnabled}
         isOpen={restTimer.isOpen}
-        onClose={() => setRestTimer(prev => ({ ...prev, isOpen: false }))}
+        onClose={() => setRestTimer((prev) => ({ ...prev, isOpen: false }))}
       />
 
       {/* Modals */}
@@ -422,6 +698,22 @@ export function App() {
         session={finishedSession}
         isOpen={!!finishedSession}
         onSaveAndClose={handleSaveCompletedSession}
+        weightUnit={preferences.weightUnit}
+      />
+
+      <AccountPersonalizationModal
+        isOpen={isAccountModalOpen}
+        onClose={() => setIsAccountModalOpen(false)}
+        user={user}
+        authLoading={authLoading}
+        authError={authError}
+        syncStatus={syncStatus}
+        lastSyncedAt={lastSyncedAt}
+        onSignInGoogle={handleSignInGoogle}
+        onSignOut={handleSignOut}
+        onManualSync={handleManualSync}
+        preferences={preferences}
+        onUpdatePreferences={handleUpdatePreferences}
       />
 
       {/* Bottom Mobile Tab Bar */}

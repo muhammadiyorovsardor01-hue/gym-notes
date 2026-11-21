@@ -80,3 +80,24 @@ export interface WorkoutTemplate {
   exercises: TemplateExerciseItem[];
   isCustom?: boolean;
 }
+
+export type ThemeId = 'emerald' | 'zedlime' | 'accent' | 'pastel';
+export type WeightUnit = 'kg' | 'lbs';
+export type SyncStatus = 'idle' | 'syncing' | 'synced' | 'error';
+
+export interface UserPreferences {
+  theme: ThemeId;
+  weightUnit: WeightUnit;
+  weightStep: number;
+  soundEnabled: boolean;
+}
+
+export interface CloudUserData {
+  templates: WorkoutTemplate[];
+  history: WorkoutSession[];
+  personalRecords: Record<string, PersonalRecord>;
+  customExercises: ExerciseItem[];
+  activeWorkout: WorkoutSession | null;
+  preferences: UserPreferences;
+  updatedAt: number;
+}

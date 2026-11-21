@@ -1,16 +1,59 @@
 @import "tailwindcss";
 
-@layer base {
-  :root {
-    --bg-main: #090a0f;
-    --bg-card: #12141c;
-    --bg-surface: #181b26;
-    --border-subtle: #222636;
-    --border-focus: #10b981;
-    --accent-emerald: #10b981;
-    --accent-cyan: #06b6d4;
-  }
+:root,
+[data-theme="emerald"] {
+  --bg-main: #090a0f;
+  --bg-card: #12141c;
+  --bg-surface: #181b26;
+  --border-subtle: #222636;
+  --border-focus: #10b981;
+  --accent-emerald: #10b981;
+  --accent-cyan: #06b6d4;
+  --color-emerald-500: #10b981;
+  --color-emerald-400: #34d399;
+  --color-emerald-950: #022c22;
+}
 
+[data-theme="zedlime"] {
+  --bg-main: #0e0c16;
+  --bg-card: #161324;
+  --bg-surface: #201c33;
+  --border-subtle: #2d2747;
+  --border-focus: #c8f64b;
+  --accent-emerald: #c8f64b;
+  --accent-cyan: #a78bfa;
+  --color-emerald-500: #c8f64b;
+  --color-emerald-400: #d9fb78;
+  --color-emerald-950: #1e2908;
+}
+
+[data-theme="accent"] {
+  --bg-main: #0c0d17;
+  --bg-card: #141524;
+  --bg-surface: #1d1f33;
+  --border-subtle: #2c2f4a;
+  --border-focus: #c8bfff;
+  --accent-emerald: #c8bfff;
+  --accent-cyan: #818cf8;
+  --color-emerald-500: #c8bfff;
+  --color-emerald-400: #dfd8ff;
+  --color-emerald-950: #221652;
+}
+
+[data-theme="pastel"] {
+  --bg-main: #101018;
+  --bg-card: #181824;
+  --bg-surface: #222233;
+  --border-subtle: #313147;
+  --border-focus: #a5e1c3;
+  --accent-emerald: #a5e1c3;
+  --accent-cyan: #f3b8ce;
+  --color-emerald-500: #a5e1c3;
+  --color-emerald-400: #c5eed9;
+  --color-emerald-950: #162e26;
+}
+
+@layer base {
   body {
     background-color: var(--bg-main);
     color: #e2e8f0;
@@ -18,6 +61,7 @@
     user-select: none;
     -webkit-tap-highlight-color: transparent;
     letter-spacing: -0.01em;
+    transition: background-color 0.2s ease;
   }
 }
 
@@ -33,10 +77,10 @@
   height: 5px;
 }
 ::-webkit-scrollbar-track {
-  background: #090a0f;
+  background: var(--bg-main);
 }
 ::-webkit-scrollbar-thumb {
-  background: #222636;
+  background: var(--border-subtle);
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {

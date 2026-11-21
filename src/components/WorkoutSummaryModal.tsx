@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import type { WorkoutSession } from '../types';
+import type { WorkoutSession, WeightUnit } from '../types';
 import confetti from 'canvas-confetti';
 import { Trophy, Clock, Flame, Dumbbell, ArrowRight } from 'lucide-react';
 
@@ -7,10 +7,11 @@ interface WorkoutSummaryModalProps {
   session: WorkoutSession | null;
   isOpen: boolean;
   onSaveAndClose: () => void;
+  weightUnit?: WeightUnit;
 }
 
 export const WorkoutSummaryModal: React.FC<WorkoutSummaryModalProps> = ({
-  session, isOpen, onSaveAndClose,
+  session, isOpen, onSaveAndClose, weightUnit = 'kg',
 }) => {
   useEffect(() => {
     if (isOpen) {
@@ -44,7 +45,7 @@ export const WorkoutSummaryModal: React.FC<WorkoutSummaryModalProps> = ({
           </div>
           <div className="border-x border-[#1a1d2a]">
             <div className="text-[9px] text-slate-600 font-semibold uppercase flex items-center justify-center gap-1"><Flame size={10} /> Tonnaj</div>
-            <div className="text-sm font-bold text-amber-400 font-mono-numbers mt-1">{session.totalVolume.toLocaleString()} kg</div>
+            <div className="text-sm font-bold text-amber-400 font-mono-numbers mt-1">{session.totalVolume.toLocaleString()} {weightUnit}</div>
           </div>
           <div>
             <div className="text-[9px] text-slate-600 font-semibold uppercase flex items-center justify-center gap-1"><Dumbbell size={10} /> Set</div>
@@ -61,7 +62,7 @@ export const WorkoutSummaryModal: React.FC<WorkoutSummaryModalProps> = ({
                 <span className="font-medium text-white truncate max-w-[180px]">{we.exercise.nameUz}</span>
                 <div className="text-slate-500 font-mono-numbers flex items-center gap-2">
                   <span>{done.length}s</span>
-                  {maxW > 0 && <span className="text-emerald-400 font-semibold">{maxW}kg</span>}
+                  {maxW > 0 && <span className="text-emerald-400 font-semibold">{maxW}{weightUnit}</span>}
                 </div>
               </div>
             );

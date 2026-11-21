@@ -1,4 +1,10 @@
-import type { WorkoutSession, ExerciseItem, PersonalRecord, WorkoutTemplate } from '../types';
+import type {
+  WorkoutSession,
+  ExerciseItem,
+  PersonalRecord,
+  WorkoutTemplate,
+  UserPreferences,
+} from '../types';
 import { DEFAULT_EXERCISES } from '../data/defaultExercises';
 
 const STORAGE_KEYS = {
@@ -8,30 +14,64 @@ const STORAGE_KEYS = {
   PERSONAL_RECORDS: 'gymnotes_prs',
   REST_DURATION: 'gymnotes_rest_duration',
   TEMPLATES_V2: 'gymnotes_templates_v2',
+  PREFERENCES: 'gymnotes_preferences',
+  CLOUD_BANNER_DISMISSED: 'gymnotes_cloud_banner_dismissed',
 };
 
-export const getExercises = (): ExerciseItem[] => {
+export const DEFAULT_PREFERENCES: UserPreferences = {
+  theme: 'emerald',
+  weightUnit: 'kg',
+  weightStep: 2.5,
+  soundEnabled: true,
+};
+
+export const getUserPreferences = (): UserPreferences => {
   try {
-    const custom = localStorage.getItem(STORAGE_KEYS.CUSTOM_EXERCISES);
-    const customList: ExerciseItem[] = custom ? JSON.parse(custom) : [];
-    return [...DEFAULT_EXERCISES, ...customList];
+    const raw = localStorage.getItem(STORAGE_KEYS.PREFERENCES);
+    if (!raw) return DEFAULT_PREFERENCES;
+    return { ...DEFAULT_PREFERENCES, ...JSON.parse(raw) };
   } catch (e) {
-    console.error('Error reading exercises', e);
-    return DEFAULT_EXERCISES;
+    console.error('Error reading user preferences', e);
+    return DEFAULT_PREFERENCES;
   }
 };
 
-export const saveCustomExercise = (exercise: ExerciseItem): ExerciseItem[] => {
+export const saveUserPreferences = (prefs: UserPreferences): void => {
+  try {
+    localStorage.setItem(STORAGE_KEYS.PREFERENCES, JSON.stringify(prefs));
+  } catch (e) {
+    console.error('Error saving user preferences', e);
+  }
+};
+
+export const getCustomExercisesOnly = (): ExerciseItem[] => {
   try {
     const custom = localStorage.getItem(STORAGE_KEYS.CUSTOM_EXERCISES);
-    const customList: ExerciseItem[] = custom ? JSON.parse(custom) : [];
-    customList.push(exercise);
+    return custom ? JSON.parse(custom) : [];
+  } catch (e) {
+    console.error('Error reading custom exercises', e);
+    return [];
+  }
+};
+
+export const saveCustomExercisesList = (customList: ExerciseItem[]): ExerciseItem[] => {
+  try {
     localStorage.setItem(STORAGE_KEYS.CUSTOM_EXERCISES, JSON.stringify(customList));
     return [...DEFAULT_EXERCISES, ...customList];
   } catch (e) {
-    console.error('Error saving custom exercise', e);
+    console.error('Error saving custom exercises list', e);
     return DEFAULT_EXERCISES;
   }
+};
+
+export const getExercises = (): ExerciseItem[] => {
+  return [...DEFAULT_EXERCISES, ...getCustomExercisesOnly()];
+};
+
+export const saveCustomExercise = (exercise: ExerciseItem): ExerciseItem[] => {
+  const customList = getCustomExercisesOnly();
+  customList.push(exercise);
+  return saveCustomExercisesList(customList);
 };
 
 export const getActiveWorkout = (): WorkoutSession | null => {
@@ -66,6 +106,14 @@ export const getWorkoutHistory = (): WorkoutSession[] => {
   }
 };
 
+export const saveWorkoutHistoryList = (history: WorkoutSession[]): void => {
+  try {
+    localStorage.setItem(STORAGE_KEYS.HISTORY, JSON.stringify(history));
+  } catch (e) {
+    console.error('Error saving history list', e);
+  }
+};
+
 export const saveWorkoutToHistory = (session: WorkoutSession): WorkoutSession[] => {
   try {
     const history = getWorkoutHistory();
@@ -84,7 +132,7 @@ export const saveWorkoutToHistory = (session: WorkoutSession): WorkoutSession[] 
 
 export const deleteWorkoutFromHistory = (id: string): WorkoutSession[] => {
   try {
-    const history = getWorkoutHistory().filter(item => item.id !== id);
+    const history = getWorkoutHistory().filter((item) => item.id !== id);
     localStorage.setItem(STORAGE_KEYS.HISTORY, JSON.stringify(history));
     return history;
   } catch (e) {
@@ -103,15 +151,23 @@ export const getPersonalRecords = (): Record<string, PersonalRecord> => {
   }
 };
 
+export const savePersonalRecordsMap = (prs: Record<string, PersonalRecord>): void => {
+  try {
+    localStorage.setItem(STORAGE_KEYS.PERSONAL_RECORDS, JSON.stringify(prs));
+  } catch (e) {
+    console.error('Error saving PRs map', e);
+  }
+};
+
 export const updatePersonalRecords = (session: WorkoutSession) => {
   try {
     const prs = getPersonalRecords();
     const dateStr = new Date(session.startTime).toLocaleDateString('uz-UZ');
 
-    session.exercises.forEach(we => {
-      we.sets.forEach(set => {
+    session.exercises.forEach((we) => {
+      we.sets.forEach((set) => {
         if (!set.completed || set.weight <= 0) return;
-        
+
         const existing = prs[we.exerciseId];
         if (!existing || set.weight > existing.maxWeight) {
           prs[we.exerciseId] = {
@@ -176,7 +232,23 @@ export const resetWorkoutTemplatesToDefault = (): WorkoutTemplate[] => {
   try {
     localStorage.setItem(STORAGE_KEYS.TEMPLATES_V2, JSON.stringify([]));
     return [];
-  } catch (e) {
+  } catch {
     return [];
+  }
+};
+
+export const isCloudBannerDismissed = (): boolean => {
+  try {
+    return localStorage.getItem(STORAGE_KEYS.CLOUD_BANNER_DISMISSED) === '1';
+  } catch {
+    return false;
+  }
+};
+
+export const dismissCloudBanner = (): void => {
+  try {
+    localStorage.setItem(STORAGE_KEYS.CLOUD_BANNER_DISMISSED, '1');
+  } catch {
+    // ignore
   }
 };

@@ -15,7 +15,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   isWorkoutActive,
 }) => {
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-30 bg-[#090a0f]/98 border-t border-[#1a1d2a] backdrop-blur-lg px-2 py-1.5 pb-safe">
+    <nav className="fixed bottom-0 left-0 right-0 z-30 bg-[var(--bg-main)]/98 border-t border-[var(--border-subtle)] backdrop-blur-lg px-2 py-1.5 pb-safe">
       <div className="max-w-md mx-auto grid grid-cols-4 gap-1">
         {/* Workout */}
         <button

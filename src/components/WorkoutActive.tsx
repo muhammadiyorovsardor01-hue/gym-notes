@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import type { WorkoutSession, ExerciseSet, ExerciseItem } from '../types';
+import type { WorkoutSession, ExerciseSet, ExerciseItem, WeightUnit } from '../types';
 import { getExerciseShortsUrl } from '../utils/youtube';
 import { getExerciseRestInfo, formatRestShort } from '../utils/restTimer';
 import { 
@@ -16,6 +16,8 @@ interface WorkoutActiveProps {
   onOpenTechnique: (exercise: ExerciseItem) => void;
   onTriggerRestTimer: (exercise: ExerciseItem) => void;
   previousRecords: Record<string, { maxWeight: number; maxRepsAtMaxWeight: number }>;
+  weightUnit?: WeightUnit;
+  weightStep?: number;
 }
 
 export const WorkoutActive: React.FC<WorkoutActiveProps> = ({
@@ -28,6 +30,8 @@ export const WorkoutActive: React.FC<WorkoutActiveProps> = ({
   onOpenTechnique,
   onTriggerRestTimer,
   previousRecords,
+  weightUnit = 'kg',
+  weightStep = 2.5,
 }) => {
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
 
@@ -181,7 +185,7 @@ export const WorkoutActive: React.FC<WorkoutActiveProps> = ({
                 <Timer size={12} /> {formatDuration(elapsedSeconds)}
               </span>
               <span className="flex items-center gap-1">
-                <Flame size={12} className="text-amber-500" /> {totalVolume.toLocaleString()} kg
+                <Flame size={12} className="text-amber-500" /> {totalVolume.toLocaleString()} {weightUnit}
               </span>
               <span>{totalSetsCount} set</span>
             </div>
@@ -229,7 +233,7 @@ export const WorkoutActive: React.FC<WorkoutActiveProps> = ({
                       </button>
                       {pr && (
                         <span className="text-[9px] font-semibold px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-400">
-                          PR: {pr.maxWeight} kg
+                          PR: {pr.maxWeight} {weightUnit}
                         </span>
                       )}
                     </div>
@@ -260,7 +264,7 @@ export const WorkoutActive: React.FC<WorkoutActiveProps> = ({
                   <thead>
                     <tr className="text-slate-600 font-semibold">
                       <th className="py-1.5 text-center w-8">SET</th>
-                      <th className="py-1.5 text-center">KG</th>
+                      <th className="py-1.5 text-center">{weightUnit.toUpperCase()}</th>
                       <th className="py-1.5 text-center">REPS</th>
                       <th className="py-1.5 text-center w-12">✓</th>
                       <th className="py-1.5 w-6"></th>
@@ -272,14 +276,14 @@ export const WorkoutActive: React.FC<WorkoutActiveProps> = ({
                         <td className="py-2 text-center font-bold text-slate-500 font-mono-numbers">{set.setNumber}</td>
                         <td className="py-2 px-1">
                           <div className="flex items-center justify-center gap-0.5">
-                            <button onClick={() => handleAdjust(exIdx, setIdx, 'weight', -2.5)} className="w-6 h-7 rounded bg-[#181b26] hover:bg-[#1f2330] text-slate-500 flex items-center justify-center">
+                            <button onClick={() => handleAdjust(exIdx, setIdx, 'weight', -weightStep)} className="w-6 h-7 rounded bg-[#181b26] hover:bg-[#1f2330] text-slate-500 flex items-center justify-center">
                               <Minus size={10} />
                             </button>
                             <input type="number" step="0.5" value={set.weight === 0 ? '' : set.weight} placeholder="0"
                               onChange={(e) => handleUpdateSet(exIdx, setIdx, 'weight', parseFloat(e.target.value) || 0)}
                               className="w-14 py-1.5 text-center font-mono-numbers font-bold bg-[#181b26] border border-[#222636] rounded-md text-white text-xs focus:outline-none focus:border-emerald-500"
                             />
-                            <button onClick={() => handleAdjust(exIdx, setIdx, 'weight', 2.5)} className="w-6 h-7 rounded bg-[#181b26] hover:bg-[#1f2330] text-slate-500 flex items-center justify-center">
+                            <button onClick={() => handleAdjust(exIdx, setIdx, 'weight', weightStep)} className="w-6 h-7 rounded bg-[#181b26] hover:bg-[#1f2330] text-slate-500 flex items-center justify-center">
                               <Plus size={10} />
                             </button>
                           </div>
