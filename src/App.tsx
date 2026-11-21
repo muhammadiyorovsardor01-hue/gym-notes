@@ -3,7 +3,8 @@ import type {
   WorkoutSession, 
   ExerciseItem, 
   PersonalRecord,
-  WorkoutTemplate
+  WorkoutTemplate,
+  ExerciseDifficulty
 } from './types';
 import { 
   getExercises, 
@@ -14,10 +15,10 @@ import {
   saveWorkoutToHistory, 
   deleteWorkoutFromHistory,
   getPersonalRecords,
-  getDefaultRestDuration,
   getWorkoutTemplates,
   saveAllWorkoutTemplates
 } from './utils/storage';
+import { getExerciseRestInfo } from './utils/restTimer';
 
 import { Header } from './components/Header';
 import { Navbar } from './components/Navbar';
@@ -39,14 +40,36 @@ export function App() {
   const [activeWorkout, setActiveWorkout] = useState<WorkoutSession | null>(() => getActiveWorkout());
   const [history, setHistory] = useState<WorkoutSession[]>(() => getWorkoutHistory());
   const [personalRecords, setPersonalRecords] = useState<Record<string, PersonalRecord>>(() => getPersonalRecords());
-  const [restDuration] = useState<number>(() => getDefaultRestDuration());
 
   // Modals state
   const [isSelectorOpen, setIsSelectorOpen] = useState(false);
   const [targetDayIdForExercise, setTargetDayIdForExercise] = useState<string | null>(null);
   const [techniqueExercise, setTechniqueExercise] = useState<ExerciseItem | null>(null);
-  const [isRestTimerOpen, setIsRestTimerOpen] = useState(false);
+  const [restTimer, setRestTimer] = useState<{
+    isOpen: boolean;
+    seconds: number;
+    triggerKey: number;
+    exerciseName?: string;
+    difficulty?: ExerciseDifficulty;
+    difficultyLabel?: string;
+  }>({
+    isOpen: false,
+    seconds: 60,
+    triggerKey: 0,
+  });
   const [finishedSession, setFinishedSession] = useState<WorkoutSession | null>(null);
+
+  const handleTriggerRestTimer = (exercise: ExerciseItem) => {
+    const info = getExerciseRestInfo(exercise);
+    setRestTimer(prev => ({
+      isOpen: true,
+      seconds: info.seconds,
+      triggerKey: prev.triggerKey + 1,
+      exerciseName: exercise.nameUz || exercise.name,
+      difficulty: info.difficulty,
+      difficultyLabel: info.labelUz,
+    }));
+  };
 
   // Auto-sync active workout to localStorage whenever it changes
   useEffect(() => {
@@ -173,6 +196,7 @@ export function App() {
     if (confirm("Haqiqatan ham davom etayotgan mashg'ulotni bekor qilmoqchimisiz?")) {
       setActiveWorkout(null);
       saveActiveWorkout(null);
+      setRestTimer(prev => ({ ...prev, isOpen: false }));
     }
   };
 
@@ -217,7 +241,7 @@ export function App() {
     setActiveWorkout(null);
     saveActiveWorkout(null);
     setFinishedSession(null);
-    setIsRestTimerOpen(false);
+    setRestTimer(prev => ({ ...prev, isOpen: false }));
 
     // Switch to history tab to view achievements
     setCurrentTab('history');
@@ -332,7 +356,7 @@ export function App() {
               setIsSelectorOpen(true);
             }}
             onOpenTechnique={(ex) => setTechniqueExercise(ex)}
-            onTriggerRestTimer={() => setIsRestTimerOpen(true)}
+            onTriggerRestTimer={handleTriggerRestTimer}
             previousRecords={personalRecords}
           />
         )}
@@ -367,9 +391,13 @@ export function App() {
 
       {/* Floating Rest Timer */}
       <RestTimer
-        initialSeconds={restDuration}
-        isOpen={isRestTimerOpen}
-        onClose={() => setIsRestTimerOpen(false)}
+        initialSeconds={restTimer.seconds}
+        triggerKey={restTimer.triggerKey}
+        exerciseName={restTimer.exerciseName}
+        difficulty={restTimer.difficulty}
+        difficultyLabel={restTimer.difficultyLabel}
+        isOpen={restTimer.isOpen}
+        onClose={() => setRestTimer(prev => ({ ...prev, isOpen: false }))}
       />
 
       {/* Modals */}

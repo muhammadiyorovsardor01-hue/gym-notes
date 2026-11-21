@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import type { WorkoutSession, ExerciseSet, ExerciseItem } from '../types';
 import { getExerciseShortsUrl } from '../utils/youtube';
+import { getExerciseRestInfo, formatRestShort } from '../utils/restTimer';
 import { 
   Play, Check, Trash2, Plus, Info, Timer, Flame, Dumbbell, Minus, Zap
 } from 'lucide-react';
@@ -13,7 +14,7 @@ interface WorkoutActiveProps {
   onCancelWorkout: () => void;
   onOpenExerciseSelector: () => void;
   onOpenTechnique: (exercise: ExerciseItem) => void;
-  onTriggerRestTimer: () => void;
+  onTriggerRestTimer: (exercise: ExerciseItem) => void;
   previousRecords: Record<string, { maxWeight: number; maxRepsAtMaxWeight: number }>;
 }
 
@@ -116,9 +117,10 @@ export const WorkoutActive: React.FC<WorkoutActiveProps> = ({
 
   const handleUpdateSet = (exIdx: number, setIdx: number, field: keyof ExerciseSet, value: unknown) => {
     if (!workout) return;
+    const exerciseItem = workout.exercises[exIdx]?.exercise;
     const target = workout.exercises[exIdx]?.sets[setIdx];
-    if (field === 'completed' && value === true && target && !target.completed) {
-      onTriggerRestTimer();
+    if (field === 'completed' && value === true && target && !target.completed && exerciseItem) {
+      onTriggerRestTimer(exerciseItem);
     }
 
     const updated: WorkoutSession = {
@@ -207,15 +209,24 @@ export const WorkoutActive: React.FC<WorkoutActiveProps> = ({
         <div className="space-y-3">
           {workout.exercises.map((we, exIdx) => {
             const pr = previousRecords[we.exerciseId];
+            const restInfo = getExerciseRestInfo(we.exercise);
             return (
               <div key={we.id} className="bg-[#12141c] border border-[#222636] rounded-xl p-4 space-y-3">
                 {/* Exercise header */}
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-1">
+                    <div className="flex flex-wrap items-center gap-1.5 mb-1">
                       <span className="text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-[#181b26] text-slate-500">
                         {we.exercise.muscleGroup}
                       </span>
+                      <button
+                        type="button"
+                        onClick={() => onTriggerRestTimer(we.exercise)}
+                        className="text-[9px] font-semibold px-1.5 py-0.5 rounded bg-[#181b26] hover:bg-emerald-500/15 text-slate-400 hover:text-emerald-400 border border-[#222636] hover:border-emerald-500/30 flex items-center gap-1 transition-colors font-mono-numbers"
+                        title="Dam olish taymerini boshlash"
+                      >
+                        <Timer size={10} /> {formatRestShort(restInfo.seconds)}
+                      </button>
                       {pr && (
                         <span className="text-[9px] font-semibold px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-400">
                           PR: {pr.maxWeight} kg

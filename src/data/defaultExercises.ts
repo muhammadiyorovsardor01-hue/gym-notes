@@ -18,6 +18,8 @@ export const DEFAULT_EXERCISES: ExerciseItem[] = [
     name: 'Barbell Back Squat',
     nameUz: 'Squats (Shtanga bilan o‘tirish)',
     muscleGroup: 'legs',
+    difficulty: 'heavy',
+    restSeconds: 120,
     cues: [
       "Oyoqlarni yelka kengligida qo'ying, oyoq barmoqlari 15-30° tashqariga qarasin.",
       "Tizzalar oyoq uchi tomon harakatlansin, tovon yerdan uzilmasin.",
@@ -36,6 +38,8 @@ export const DEFAULT_EXERCISES: ExerciseItem[] = [
     name: 'Barbell Bench Press',
     nameUz: 'Bench Press (Shtanga yotib ko‘tarish)',
     muscleGroup: 'chest',
+    difficulty: 'heavy',
+    restSeconds: 120,
     cues: [
       "Skameykaga yotganda yelka kuraklarini (scapula) orqaga va pastga qisib oling.",
       "Oyoqlarni polga mahkam tirab 'leg drive' hosil qiling.",
@@ -54,6 +58,8 @@ export const DEFAULT_EXERCISES: ExerciseItem[] = [
     name: 'Seated Cable Rows',
     nameUz: 'Cable Rows (Blokda gorizontal tortish)',
     muscleGroup: 'back',
+    difficulty: 'medium',
+    restSeconds: 90,
     cues: [
       "Gavdani tik tuting, orqa va belni to'g'ri ushlang, tizzalar yengil bukilgan bo'lsin.",
       "Dastakni qorin pastiga qarab torting, tirsaklar tanaga yaqin harakatlansin.",
@@ -72,6 +78,8 @@ export const DEFAULT_EXERCISES: ExerciseItem[] = [
     name: 'Seated Dumbbell Shoulder Press',
     nameUz: 'Dumbbell Shoulder Press (Gantel bilan yelka)',
     muscleGroup: 'shoulders',
+    difficulty: 'medium',
+    restSeconds: 90,
     cues: [
       "Skameykaga suyangan holda, gantellarni quloq balandligidan boshlab tepaga ko'taring.",
       "Tirsaklarni to'liq yonboshga emas, 15-30° oldinga (scapular plane) yo'naltiring.",
@@ -90,6 +98,8 @@ export const DEFAULT_EXERCISES: ExerciseItem[] = [
     name: 'Cable Triceps Pushdown',
     nameUz: 'Triceps Pushdowns (Blokda triceps)',
     muscleGroup: 'arms',
+    difficulty: 'medium',
+    restSeconds: 60,
     cues: [
       "Tirsaklarni qovurg'alarga mahkam tirang va butun harakat davomida qimirlatmang.",
       "Arqon yoki dastakni pastga to'liq yozib, tricepsni qattiq siqing.",
@@ -108,6 +118,8 @@ export const DEFAULT_EXERCISES: ExerciseItem[] = [
     name: 'Dumbbell Lateral Raises',
     nameUz: 'Lateral Raises (Gantellarni yonga ko‘tarish)',
     muscleGroup: 'shoulders',
+    difficulty: 'light',
+    restSeconds: 60,
     cues: [
       "Gantellarni to'g'ridan-to'g'ri yonga emas, 15-30° oldinga yo'naltirib ko'taring.",
       "Tirsaklar biroz bukilgan bo'lsin, yelka balandligigacha ko'taring.",
@@ -126,6 +138,8 @@ export const DEFAULT_EXERCISES: ExerciseItem[] = [
     name: 'Seated Calf Raises',
     nameUz: 'Seated Calf Raises (O‘tirib boldir ko‘tarish)',
     muscleGroup: 'legs',
+    difficulty: 'light',
+    restSeconds: 45,
     cues: [
       "Oyoq uchlarini platformaga qo'ying, tovonni imkon qadar pastga tushirib to'liq cho'zing.",
       "Oyoq uchi bilan kuchli itarib, yuqorida 1-2 soniya to'xtab turing.",
@@ -144,6 +158,8 @@ export const DEFAULT_EXERCISES: ExerciseItem[] = [
     name: 'Planks',
     nameUz: 'Planks (Planka mashqi)',
     muscleGroup: 'core',
+    difficulty: 'light',
+    restSeconds: 45,
     cues: [
       "Tirsaklar to'g'ri yelkalar ostida bo'lsin.",
       "Qorin va dumbani qattiq qisib, tanani to'g'ri chiziqda (hollow body) ushlang.",
@@ -162,6 +178,8 @@ export const DEFAULT_EXERCISES: ExerciseItem[] = [
     name: 'Dumbbell Shrugs',
     nameUz: 'Dumbbell Shrugs (Gantel bilan trapetsiya)',
     muscleGroup: 'back',
+    difficulty: 'light',
+    restSeconds: 60,
     cues: [
       "Gantellarni ikki yonda ushlang, yelkalarni to'g'ridan-to'g'ri quloqlar tomon ko'taring.",
       "Tepada 1-2 soniya qattiq qisib turing.",
@@ -182,6 +200,8 @@ export const DEFAULT_EXERCISES: ExerciseItem[] = [
     name: 'Barbell Deadlift',
     nameUz: 'Deadlifts (Stanovaya tyaga)',
     muscleGroup: 'back',
+    difficulty: 'heavy',
+    restSeconds: 120,
     cues: [
       "Shtanga to'g'ridan-to'g'ri oyoq o'rtasida bo'lsin, boldir shtangaga deyarli tegib turadi.",
       "Belni qat'iy tekis ushlang, ko'krakni oching, kuraklarni orqaga bosing.",
@@ -200,6 +220,8 @@ export const DEFAULT_EXERCISES: ExerciseItem[] = [
     name: 'Lat Pulldowns',
     nameUz: 'Lat Pulldowns (Blokni ko‘krakka tortish)',
     muscleGroup: 'back',
+    difficulty: 'medium',
+    restSeconds: 90,
     cues: [
       "Dastakni yelka kengligidan 1.5 baravar kengroq ushlang.",
       "Gavdani 10-15° orqaga egib, tirsaklarni pastga va orqaga yo'naltiring.",
@@ -218,6 +240,8 @@ export const DEFAULT_EXERCISES: ExerciseItem[] = [
     name: 'Incline Dumbbell / Barbell Press',
     nameUz: 'Incline Press (Qiya skameykada ko‘tarish)',
     muscleGroup: 'chest',
+    difficulty: 'heavy',
+    restSeconds: 105,
     cues: [
       "Skameyka qiyaligi 30 daraja atrofida bo'lishi maqbul.",
       "Pastga tushirganda ko'krak yuqori qismini yaxshilab cho'zing.",
@@ -236,6 +260,8 @@ export const DEFAULT_EXERCISES: ExerciseItem[] = [
     name: 'Barbell / Dumbbell Biceps Curls',
     nameUz: 'Biceps Curls (Bicepsga ko‘tarish)',
     muscleGroup: 'arms',
+    difficulty: 'medium',
+    restSeconds: 60,
     cues: [
       "Tirsaklar tananing ikki yoniga mahkamlansin va harakatlanmasin.",
       "Faqat tirsak bo'g'imini buking, tepada 1 soniya qattiq siqing.",
@@ -254,6 +280,8 @@ export const DEFAULT_EXERCISES: ExerciseItem[] = [
     name: 'Dumbbell Hammer Curls',
     nameUz: 'Hammer Curls (Bolg‘a mashqi)',
     muscleGroup: 'arms',
+    difficulty: 'medium',
+    restSeconds: 60,
     cues: [
       "Gantellarni kaftlar bir-biriga qaragan holda (neytral) ushlang.",
       "Bu mashq brachialis va bilak mushaklarini kuchli rivojlantiradi.",
@@ -272,6 +300,8 @@ export const DEFAULT_EXERCISES: ExerciseItem[] = [
     name: 'Dumbbell / Cable Reverse Fly',
     nameUz: 'Reverse Fly (Orqa deltalarga yoyish)',
     muscleGroup: 'shoulders',
+    difficulty: 'light',
+    restSeconds: 60,
     cues: [
       "Oldinga egiling yoki ko'krak bilan skameykaga yoting.",
       "Tirsaklar biroz bukilgan holda gantellarni yonga va orqaga yoying.",
@@ -290,6 +320,8 @@ export const DEFAULT_EXERCISES: ExerciseItem[] = [
     name: 'Standing Calf Raises',
     nameUz: 'Standing Calf Raises (Tik turib boldir)',
     muscleGroup: 'legs',
+    difficulty: 'light',
+    restSeconds: 45,
     cues: [
       "Tik turgan holda tizzalarni to'g'ri (lekin blokirovka qilmasdan) tuting.",
       "Oyoq uchi bilan maksimal yuqoriga ko'tarilib, 1-2 soniya to'xtang.",
@@ -308,6 +340,8 @@ export const DEFAULT_EXERCISES: ExerciseItem[] = [
     name: 'Neck Isometric Holds',
     nameUz: 'Neck Isometrics (Bo‘yin mashqi)',
     muscleGroup: 'neck',
+    difficulty: 'light',
+    restSeconds: 30,
     cues: [
       "Kaftingizni peshonangizga yoki boshning yon tomoniga qo'ying.",
       "Boshingiz bilan qo'lingizni itaring, lekin bosh qimirlamasin (izometrik qarshilik).",
@@ -328,6 +362,8 @@ export const DEFAULT_EXERCISES: ExerciseItem[] = [
     name: 'Leg Press',
     nameUz: 'Leg Press (Oyoqda platforma itarish)',
     muscleGroup: 'legs',
+    difficulty: 'heavy',
+    restSeconds: 120,
     cues: [
       "Bel va dumbani o'rindiqqa mahkam yopishtiring.",
       "Platformani tizzalar 90 gradus bo'lguncha nazorat bilan tushiring.",
@@ -346,6 +382,8 @@ export const DEFAULT_EXERCISES: ExerciseItem[] = [
     name: 'T-Bar Rows',
     nameUz: 'T-Bar Rows (T-grif orqaga tortish)',
     muscleGroup: 'back',
+    difficulty: 'heavy',
+    restSeconds: 105,
     cues: [
       "Tizzalarni biroz buking, korpusni 45 gradusda ushlang, bel mutlaqo to'g'ri bo'lsin.",
       "Dastakni ko'krak/qorin sohasi tomon torting.",
@@ -364,6 +402,8 @@ export const DEFAULT_EXERCISES: ExerciseItem[] = [
     name: 'Dumbbell / Cable Chest Fly',
     nameUz: 'Chest Fly (Ko‘krakni gantel/blokda yoyish)',
     muscleGroup: 'chest',
+    difficulty: 'medium',
+    restSeconds: 75,
     cues: [
       "Tirsaklar harakat davomida biroz bukilgan holatda qotirilgan bo'lsin.",
       "Qo'llarni ikki yonga yoyib ko'krak mushagini to'liq cho'zing.",
@@ -382,6 +422,8 @@ export const DEFAULT_EXERCISES: ExerciseItem[] = [
     name: 'Overhead Triceps Extensions',
     nameUz: 'Triceps Extensions (Bosh ortidan triceps)',
     muscleGroup: 'arms',
+    difficulty: 'medium',
+    restSeconds: 60,
     cues: [
       "Gantel yoki arqonni bosh ortidan tushirib tricepsni to'liq cho'zing.",
       "Tirsaklar yuqoriga qaragan holatda bir joyda mustahkam tursin.",
@@ -400,6 +442,8 @@ export const DEFAULT_EXERCISES: ExerciseItem[] = [
     name: 'Cable Lateral Raises',
     nameUz: 'Cable Lateral Raises (Blokda yelka yonga)',
     muscleGroup: 'shoulders',
+    difficulty: 'light',
+    restSeconds: 60,
     cues: [
       "Blok dastagini pastdan oling, gavdani biroz qiya ushlang.",
       "Kabel butun harakat davomida yelkada doimiy kuchlanish (tension) beradi.",
@@ -418,6 +462,8 @@ export const DEFAULT_EXERCISES: ExerciseItem[] = [
     name: 'Decline Crunches',
     nameUz: 'Decline Crunches (Qiya skameykada press)',
     muscleGroup: 'core',
+    difficulty: 'light',
+    restSeconds: 45,
     cues: [
       "Oyoqlarni qiya skameykaga mahkamlang.",
       "Gavdani to'liq emas, faqat qorin mushaklarini siqib umurtqani bukish orqali ko'taring.",
@@ -436,6 +482,8 @@ export const DEFAULT_EXERCISES: ExerciseItem[] = [
     name: 'Cable Face Pulls',
     nameUz: 'Face Pulls (Arqonni yuzga tortish)',
     muscleGroup: 'shoulders',
+    difficulty: 'light',
+    restSeconds: 45,
     cues: [
       "Arqonni ko'z balandligiga o'rnating, kaftlar pastga yoki bir-biriga qarasin.",
       "Arqonni peshona tomon torting, tirsaklar balandda orqaga ketsin.",
@@ -454,6 +502,8 @@ export const DEFAULT_EXERCISES: ExerciseItem[] = [
     name: 'Push-ups',
     nameUz: 'Otjimaniya (Push-ups)',
     muscleGroup: 'chest',
+    difficulty: 'medium',
+    restSeconds: 75,
     cues: [
       "Qo'llarni yelkadan biroz kengroq qo'ying va tirsaklarni tanaga nisbatan 45-60 gradusda ushlang.",
       "Tana boshdan tovongacha to'g'ri taxtadek (tekis) bo'lishi shart, dumba va qorinni qattiq qising.",
@@ -472,6 +522,8 @@ export const DEFAULT_EXERCISES: ExerciseItem[] = [
     name: 'Pull-ups',
     nameUz: 'Turnikda tortilish (Pull-ups)',
     muscleGroup: 'back',
+    difficulty: 'heavy',
+    restSeconds: 105,
     cues: [
       "Turnikni yelka kengligidan biroz kengroq ushlang, boshlanishida kuraklarni pastga torting.",
       "Iyak turnik darajasidan oshguncha ko'krakni turnik sari torting.",

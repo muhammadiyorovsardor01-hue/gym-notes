@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import type { ExerciseItem, MuscleGroup } from '../types';
+import type { ExerciseDifficulty, ExerciseItem, MuscleGroup } from '../types';
 import { MUSCLE_GROUPS } from '../data/defaultExercises';
-import { Search, X, Plus, Info, Dumbbell } from 'lucide-react';
+import { getExerciseRestInfo, formatRestShort } from '../utils/restTimer';
+import { Search, X, Plus, Info, Dumbbell, Timer } from 'lucide-react';
 
 interface ExerciseSelectorModalProps {
   isOpen: boolean;
@@ -20,6 +21,7 @@ export const ExerciseSelectorModal: React.FC<ExerciseSelectorModalProps> = ({
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [customName, setCustomName] = useState('');
   const [customGroup, setCustomGroup] = useState<MuscleGroup>('chest');
+  const [customDifficulty, setCustomDifficulty] = useState<ExerciseDifficulty>('medium');
 
   if (!isOpen) return null;
 
@@ -29,19 +31,31 @@ export const ExerciseSelectorModal: React.FC<ExerciseSelectorModalProps> = ({
     return matchesSearch && matchesGroup;
   });
 
+  const CUSTOM_REST_BY_DIFFICULTY: Record<ExerciseDifficulty, number> = {
+    light: 45,
+    medium: 75,
+    heavy: 120,
+  };
+
   const handleCreateCustom = (e: React.FormEvent) => {
     e.preventDefault();
     if (!customName.trim()) return;
     const newEx: ExerciseItem = {
-      id: `custom-${Date.now()}`, name: customName.trim(), nameUz: customName.trim(),
+      id: `custom-${Date.now()}`,
+      name: customName.trim(),
+      nameUz: customName.trim(),
       muscleGroup: customGroup,
+      difficulty: customDifficulty,
+      restSeconds: CUSTOM_REST_BY_DIFFICULTY[customDifficulty],
       cues: ["To'g'ri texnika va nazorat bilan bajaring."],
       mistakes: ["Haddan tashqari og'ir vaznlardan qoching."],
-      youtubeQuery: `${customName.trim()} exercise form`, isCustom: true,
+      youtubeQuery: `${customName.trim()} exercise form`,
+      isCustom: true,
     };
     onAddNewCustomExercise(newEx);
     onSelectExercise(newEx);
     setCustomName('');
+    setCustomDifficulty('medium');
     setShowCreateModal(false);
     onClose();
   };
@@ -91,23 +105,29 @@ export const ExerciseSelectorModal: React.FC<ExerciseSelectorModalProps> = ({
               </button>
             </div>
           ) : (
-            filteredExercises.map((ex) => (
-              <div key={ex.id} className="p-2.5 rounded-lg bg-[#181b26] hover:bg-[#1f2330] border border-[#222636] flex items-center justify-between transition-colors group">
-                <div className="flex-1 cursor-pointer pr-2" onClick={() => { onSelectExercise(ex); onClose(); }}>
-                  <div className="flex items-center gap-1.5 mb-0.5">
-                    <span className="text-[8px] font-bold uppercase tracking-wider px-1 py-0.5 rounded bg-[#12141c] text-slate-500">{ex.muscleGroup}</span>
+            filteredExercises.map((ex) => {
+              const restSeconds = getExerciseRestInfo(ex).seconds;
+              return (
+                <div key={ex.id} className="p-2.5 rounded-lg bg-[#181b26] hover:bg-[#1f2330] border border-[#222636] flex items-center justify-between transition-colors group">
+                  <div className="flex-1 cursor-pointer pr-2" onClick={() => { onSelectExercise(ex); onClose(); }}>
+                    <div className="flex items-center gap-1.5 mb-0.5">
+                      <span className="text-[8px] font-bold uppercase tracking-wider px-1 py-0.5 rounded bg-[#12141c] text-slate-500">{ex.muscleGroup}</span>
+                      <span className="text-[9px] font-mono-numbers text-slate-500 flex items-center gap-0.5">
+                        <Timer size={9} /> {formatRestShort(restSeconds)}
+                      </span>
+                    </div>
+                    <h4 className="text-xs font-bold text-white group-hover:text-emerald-400 transition-colors">{ex.nameUz}</h4>
                   </div>
-                  <h4 className="text-xs font-bold text-white group-hover:text-emerald-400 transition-colors">{ex.nameUz}</h4>
+                  <div className="flex items-center gap-1">
+                    <button onClick={() => onOpenTechnique(ex)} className="p-1.5 rounded text-slate-600 hover:text-emerald-400"><Info size={14} /></button>
+                    <button onClick={() => { onSelectExercise(ex); onClose(); }}
+                      className="px-2 py-1 rounded-md bg-emerald-500/10 hover:bg-emerald-500 text-emerald-400 hover:text-black font-bold text-[10px] flex items-center gap-0.5 transition-colors">
+                      <Plus size={12} /> Qo'shish
+                    </button>
+                  </div>
                 </div>
-                <div className="flex items-center gap-1">
-                  <button onClick={() => onOpenTechnique(ex)} className="p-1.5 rounded text-slate-600 hover:text-emerald-400"><Info size={14} /></button>
-                  <button onClick={() => { onSelectExercise(ex); onClose(); }}
-                    className="px-2 py-1 rounded-md bg-emerald-500/10 hover:bg-emerald-500 text-emerald-400 hover:text-black font-bold text-[10px] flex items-center gap-0.5 transition-colors">
-                    <Plus size={12} /> Qo'shish
-                  </button>
-                </div>
-              </div>
-            ))
+              );
+            })
           )}
         </div>
 
@@ -137,6 +157,31 @@ export const ExerciseSelectorModal: React.FC<ExerciseSelectorModalProps> = ({
                   className="w-full px-3 py-2 bg-[#181b26] border border-[#222636] rounded-lg text-white text-xs focus:outline-none focus:border-emerald-500">
                   {MUSCLE_GROUPS.map((g) => <option key={g.key} value={g.key}>{g.labelUz}</option>)}
                 </select>
+              </div>
+              <div>
+                <label className="block text-[11px] font-medium text-slate-400 mb-1.5">Dam olish vaqti / Qiyinlik</label>
+                <div className="grid grid-cols-3 gap-1.5">
+                  {(
+                    [
+                      { key: 'light', label: 'Yengil (45s)' },
+                      { key: 'medium', label: "O'rta (1:15)" },
+                      { key: 'heavy', label: "Og'ir (2:00)" },
+                    ] as const
+                  ).map((opt) => (
+                    <button
+                      key={opt.key}
+                      type="button"
+                      onClick={() => setCustomDifficulty(opt.key)}
+                      className={`py-2 px-2 rounded-lg text-[11px] font-semibold border transition-colors ${
+                        customDifficulty === opt.key
+                          ? 'bg-emerald-500/15 border-emerald-500 text-emerald-400'
+                          : 'bg-[#181b26] border-[#222636] text-slate-400 hover:text-white'
+                      }`}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
               </div>
               <div className="pt-3 flex gap-2">
                 <button type="button" onClick={() => setShowCreateModal(false)} className="w-1/2 py-2 rounded-lg bg-[#181b26] text-slate-400 text-xs font-semibold">Bekor</button>

@@ -8,11 +8,15 @@ export type MuscleGroup =
   | 'neck'
   | 'cardio';
 
+export type ExerciseDifficulty = 'light' | 'medium' | 'heavy';
+
 export interface ExerciseItem {
   id: string;
   name: string;
   nameUz: string;
   muscleGroup: MuscleGroup;
+  difficulty?: ExerciseDifficulty;
+  restSeconds?: number;
   cues: string[];
   mistakes: string[];
   youtubeQuery: string;
