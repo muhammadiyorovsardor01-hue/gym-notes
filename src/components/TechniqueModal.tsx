@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import type { ExerciseItem } from '../types';
 import { getExerciseShortsUrl, getExerciseFullVideoUrl, getExerciseThumbnailUrl } from '../utils/youtube';
 import { X, ExternalLink, Play, CheckCircle2, AlertTriangle, Zap, Film } from 'lucide-react';
@@ -8,11 +9,14 @@ interface TechniqueModalProps {
 }
 
 export const TechniqueModal: React.FC<TechniqueModalProps> = ({ exercise, onClose }) => {
+  const [failedThumbId, setFailedThumbId] = useState<string | null>(null);
+
   if (!exercise) return null;
 
   const shortsUrl = getExerciseShortsUrl(exercise);
   const fullVideoUrl = getExerciseFullVideoUrl(exercise);
   const thumbnailUrl = getExerciseThumbnailUrl(exercise);
+  const showThumbnail = Boolean(thumbnailUrl && failedThumbId !== exercise.id);
 
   return (
     <div 
@@ -62,13 +66,15 @@ export const TechniqueModal: React.FC<TechniqueModalProps> = ({ exercise, onClos
             >
               {/* Thumbnail with Shorts Badge */}
               <div className="relative aspect-video w-full bg-[#0d0e14]">
-                {thumbnailUrl ? (
+                {showThumbnail ? (
                   <>
                     <img
-                      src={thumbnailUrl}
+                      src={thumbnailUrl || ''}
                       alt={exercise.name}
                       className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity"
                       loading="lazy"
+                      decoding="async"
+                      onError={() => setFailedThumbId(exercise.id)}
                     />
                     {/* Dark gradient & Play Overlay */}
                     <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/40 group-hover:bg-black/20 transition-colors">

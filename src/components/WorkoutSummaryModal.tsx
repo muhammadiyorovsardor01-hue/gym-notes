@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import type { WorkoutSession, WeightUnit } from '../types';
-import confetti from 'canvas-confetti';
 import { Trophy, Clock, Flame, Dumbbell, ArrowRight } from 'lucide-react';
 
 interface WorkoutSummaryModalProps {
@@ -15,9 +14,11 @@ export const WorkoutSummaryModal: React.FC<WorkoutSummaryModalProps> = ({
 }) => {
   useEffect(() => {
     if (isOpen) {
-      try {
-        confetti({ particleCount: 80, spread: 60, origin: { y: 0.65 }, colors: ['#10b981', '#06b6d4', '#f59e0b'] });
-      } catch (e) { console.warn('Confetti error', e); }
+      import('canvas-confetti')
+        .then(({ default: confetti }) => {
+          confetti({ particleCount: 80, spread: 60, origin: { y: 0.65 }, colors: ['#10b981', '#06b6d4', '#f59e0b'] });
+        })
+        .catch(() => {});
     }
   }, [isOpen]);
 

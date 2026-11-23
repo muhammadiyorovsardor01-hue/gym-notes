@@ -30,8 +30,8 @@ export const DEFAULT_EXERCISES: ExerciseItem[] = [
       "Tovonlarni yerdan ko'tarib olish."
     ],
     youtubeQuery: 'Jeff Nippard How To Squat With Perfect Technique',
-    youtubeId: 'zoW1Wlq67nE',
-    shortsQuery: 'Jeff Nippard squat proper form shorts #shorts'
+    youtubeId: 'bEv6CCg2BC8',
+    shortsQuery: 'Jeff Nippard squat proper form shorts'
   },
   {
     id: 'bench-press',
@@ -51,7 +51,7 @@ export const DEFAULT_EXERCISES: ExerciseItem[] = [
     ],
     youtubeQuery: 'Jeff Nippard How To Bench Press with Perfect Technique',
     youtubeId: 'vcBig73ojpE',
-    shortsQuery: 'Jeff Nippard bench press form shorts #shorts'
+    shortsQuery: 'Jeff Nippard bench press form shorts'
   },
   {
     id: 'cable-rows',
@@ -71,7 +71,7 @@ export const DEFAULT_EXERCISES: ExerciseItem[] = [
     ],
     youtubeQuery: 'Jeff Nippard Seated Cable Row proper form',
     youtubeId: 'GZbfZ033f74',
-    shortsQuery: 'Jeff Nippard seated cable row form shorts #shorts'
+    shortsQuery: 'Jeff Nippard seated cable row form shorts'
   },
   {
     id: 'dumbbell-shoulder-press',
@@ -91,7 +91,7 @@ export const DEFAULT_EXERCISES: ExerciseItem[] = [
     ],
     youtubeQuery: 'Jeff Nippard Dumbbell Shoulder Press proper form',
     youtubeId: 'qEwKCR5JCog',
-    shortsQuery: 'Jeff Nippard dumbbell shoulder press form shorts #shorts'
+    shortsQuery: 'Jeff Nippard dumbbell shoulder press form shorts'
   },
   {
     id: 'triceps-pushdowns',
@@ -111,7 +111,7 @@ export const DEFAULT_EXERCISES: ExerciseItem[] = [
     ],
     youtubeQuery: 'Jeff Nippard The Best Way To Build Bigger Triceps',
     youtubeId: '2-LAMcpzODU',
-    shortsQuery: 'Jeff Nippard tricep pushdown form shorts #shorts'
+    shortsQuery: 'Jeff Nippard tricep pushdown form shorts'
   },
   {
     id: 'lateral-raises',
@@ -131,7 +131,7 @@ export const DEFAULT_EXERCISES: ExerciseItem[] = [
     ],
     youtubeQuery: 'Jeff Nippard The Most Effective Way To Lateral Raise',
     youtubeId: '3VcKaXpzqRo',
-    shortsQuery: 'Jeff Nippard lateral raises form shorts #shorts'
+    shortsQuery: 'Jeff Nippard lateral raises form shorts'
   },
   {
     id: 'seated-calf-raises',
@@ -150,8 +150,8 @@ export const DEFAULT_EXERCISES: ExerciseItem[] = [
       "Yarim amplituda bilan ishlash."
     ],
     youtubeQuery: 'Jeff Nippard How To Grow Calves Science',
-    youtubeId: 'gwLzMX30VU0',
-    shortsQuery: 'Jeff Nippard calf raise form shorts #shorts'
+    youtubeId: 'JbyjNymZOt0',
+    shortsQuery: 'seated calf raise proper form shorts'
   },
   {
     id: 'planks',
@@ -171,7 +171,7 @@ export const DEFAULT_EXERCISES: ExerciseItem[] = [
     ],
     youtubeQuery: 'Jeff Nippard The Best Way To Train Abs Core',
     youtubeId: 'ASdvN_XEl_c',
-    shortsQuery: 'Jeff Nippard plank form shorts #shorts'
+    shortsQuery: 'plank proper form shorts'
   },
   {
     id: 'dumbbell-shrugs',
@@ -190,8 +190,8 @@ export const DEFAULT_EXERCISES: ExerciseItem[] = [
       "Boshni oldinga cho'zib olish."
     ],
     youtubeQuery: 'Jeff Nippard Shrugs proper form',
-    youtubeId: 'b_b9b7H1qE0',
-    shortsQuery: 'Jeff Nippard dumbbell shrugs form shorts #shorts'
+    youtubeId: 'cJRVVxmytaM',
+    shortsQuery: 'dumbbell shrugs proper form shorts'
   },
 
   // DAY 2 EXERCISES
@@ -213,7 +213,7 @@ export const DEFAULT_EXERCISES: ExerciseItem[] = [
     ],
     youtubeQuery: 'Jeff Nippard How To Deadlift With Perfect Technique',
     youtubeId: 'op9kVnSso6Q',
-    shortsQuery: 'Jeff Nippard deadlift form shorts #shorts'
+    shortsQuery: 'Jeff Nippard deadlift form shorts'
   },
   {
     id: 'lat-pulldowns',
@@ -233,7 +233,7 @@ export const DEFAULT_EXERCISES: ExerciseItem[] = [
     ],
     youtubeQuery: 'Jeff Nippard The Smartest Way To Lat Pulldown',
     youtubeId: 'CAwf7n6Luuc',
-    shortsQuery: 'Jeff Nippard lat pulldown form shorts #shorts'
+    shortsQuery: 'Jeff Nippard lat pulldown form shorts'
   },
   {
     id: 'incline-press',
@@ -253,7 +253,7 @@ export const DEFAULT_EXERCISES: ExerciseItem[] = [
     ],
     youtubeQuery: 'Jeff Nippard Incline Dumbbell Press technique',
     youtubeId: '8iPEnn-ltC8',
-    shortsQuery: 'Jeff Nippard incline press form shorts #shorts'
+    shortsQuery: 'Jeff Nippard incline press form shorts'
   },
   {
     id: 'biceps-curls',
@@ -273,7 +273,7 @@ export const DEFAULT_EXERCISES: ExerciseItem[] = [
     ],
     youtubeQuery: 'Jeff Nippard The Smartest Way To Build Bigger Biceps',
     youtubeId: 'ykJmrZ5v0Oo',
-    shortsQuery: 'Jeff Nippard bicep curl form shorts #shorts'
+    shortsQuery: 'Jeff Nippard bicep curl form shorts'
   },
   {
     id: 'hammer-curls',
@@ -293,7 +293,7 @@ export const DEFAULT_EXERCISES: ExerciseItem[] = [
     ],
     youtubeQuery: 'Jeff Nippard Hammer Curls technique',
     youtubeId: 'TwD-YGVP4Bk',
-    shortsQuery: 'Jeff Nippard hammer curls form shorts #shorts'
+    shortsQuery: 'Jeff Nippard hammer curls form shorts'
   },
   {
     id: 'reverse-fly',
@@ -312,8 +312,8 @@ export const DEFAULT_EXERCISES: ExerciseItem[] = [
       "Og'ir tosh olib siltanib ko'tarish."
     ],
     youtubeQuery: 'Jeff Nippard Rear Delt Fly technique',
-    youtubeId: 'PzsMitRj_gE',
-    shortsQuery: 'Jeff Nippard rear delt fly shorts #shorts'
+    youtubeId: 'EA7u4Q_8HQ0',
+    shortsQuery: 'reverse fly rear delt proper form shorts'
   },
   {
     id: 'standing-calf-raises',
@@ -332,8 +332,8 @@ export const DEFAULT_EXERCISES: ExerciseItem[] = [
       "Pastki cho'zilishni o'tkazib yuborish."
     ],
     youtubeQuery: 'Jeff Nippard Calf training science',
-    youtubeId: 'gwLzMX30VU0',
-    shortsQuery: 'Jeff Nippard standing calf raises shorts #shorts'
+    youtubeId: '-M4-G8p8fmc',
+    shortsQuery: 'standing calf raise proper form shorts'
   },
   {
     id: 'neck-isometrics',
@@ -353,7 +353,7 @@ export const DEFAULT_EXERCISES: ExerciseItem[] = [
     ],
     youtubeQuery: 'Jeff Nippard Neck training science isometric',
     youtubeId: 'ASdvN_XEl_c',
-    shortsQuery: 'Jeff Nippard neck workout isometric form shorts #shorts'
+    shortsQuery: 'neck isometric exercise proper form shorts'
   },
 
   // DAY 3 EXERCISES
@@ -374,8 +374,8 @@ export const DEFAULT_EXERCISES: ExerciseItem[] = [
       "Dumbaning o'rindiqdan ko'tarilishi."
     ],
     youtubeQuery: 'Jeff Nippard Leg Press mistakes science',
-    youtubeId: 'sPt_b1g_2Hw',
-    shortsQuery: 'Jeff Nippard leg press form shorts #shorts'
+    youtubeId: 'IZxyjW7MPJQ',
+    shortsQuery: 'Jeff Nippard leg press form shorts'
   },
   {
     id: 't-bar-rows',
@@ -394,8 +394,8 @@ export const DEFAULT_EXERCISES: ExerciseItem[] = [
       "Gavdani vertikal qilib faqat qo'l bilan tortish."
     ],
     youtubeQuery: 'Jeff Nippard T-Bar Row proper form',
-    youtubeId: 'FWJR5Ve8gkQ',
-    shortsQuery: 'Jeff Nippard t bar row form shorts #shorts'
+    youtubeId: 'j3Igk5nyZE4',
+    shortsQuery: 'Jeff Nippard t bar row form shorts'
   },
   {
     id: 'chest-fly',
@@ -415,7 +415,7 @@ export const DEFAULT_EXERCISES: ExerciseItem[] = [
     ],
     youtubeQuery: 'Jeff Nippard Chest Fly proper form',
     youtubeId: '8iPEnn-ltC8',
-    shortsQuery: 'Jeff Nippard chest fly form shorts #shorts'
+    shortsQuery: 'Jeff Nippard chest fly form shorts'
   },
   {
     id: 'triceps-extensions',
@@ -435,7 +435,7 @@ export const DEFAULT_EXERCISES: ExerciseItem[] = [
     ],
     youtubeQuery: 'Jeff Nippard Overhead Tricep Extension',
     youtubeId: '2-LAMcpzODU',
-    shortsQuery: 'Jeff Nippard tricep extension form shorts #shorts'
+    shortsQuery: 'Jeff Nippard tricep extension form shorts'
   },
   {
     id: 'cable-lateral-raises',
@@ -455,7 +455,7 @@ export const DEFAULT_EXERCISES: ExerciseItem[] = [
     ],
     youtubeQuery: 'Jeff Nippard Cable Lateral Raise proper form',
     youtubeId: '3VcKaXpzqRo',
-    shortsQuery: 'Jeff Nippard cable lateral raise shorts #shorts'
+    shortsQuery: 'Jeff Nippard cable lateral raise shorts'
   },
   {
     id: 'decline-crunches',
@@ -475,7 +475,7 @@ export const DEFAULT_EXERCISES: ExerciseItem[] = [
     ],
     youtubeQuery: 'Jeff Nippard Decline Crunch Abs',
     youtubeId: 'hdng3Nm1x_E',
-    shortsQuery: 'Jeff Nippard decline crunches form shorts #shorts'
+    shortsQuery: 'decline crunch proper form shorts'
   },
   {
     id: 'face-pulls',
@@ -495,7 +495,7 @@ export const DEFAULT_EXERCISES: ExerciseItem[] = [
     ],
     youtubeQuery: 'Jeff Nippard Face Pulls proper technique',
     youtubeId: 'rep-qVOkqgk',
-    shortsQuery: 'Jeff Nippard face pulls form shorts #shorts'
+    shortsQuery: 'Jeff Nippard face pulls form shorts'
   },
   {
     id: 'push-ups',
@@ -514,8 +514,8 @@ export const DEFAULT_EXERCISES: ExerciseItem[] = [
       "Belni pastga osiltirish."
     ],
     youtubeQuery: 'Jeff Nippard push ups proper form technique',
-    youtubeId: 'hxmd2G_qH1g',
-    shortsQuery: 'Jeff Nippard push ups proper form shorts #shorts'
+    youtubeId: 'IODxDxX7oi4',
+    shortsQuery: 'Jeff Nippard push ups proper form shorts'
   },
   {
     id: 'pull-ups',
@@ -535,6 +535,6 @@ export const DEFAULT_EXERCISES: ExerciseItem[] = [
     ],
     youtubeQuery: 'Jeff Nippard How To Pull Up Perfect Technique',
     youtubeId: 'eGo4IYlbE5g',
-    shortsQuery: 'Jeff Nippard pull ups form shorts #shorts'
+    shortsQuery: 'Jeff Nippard pull ups form shorts'
   }
 ];

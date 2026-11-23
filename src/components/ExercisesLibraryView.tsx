@@ -17,6 +17,7 @@ export const ExercisesLibraryView: React.FC<ExercisesLibraryViewProps> = ({
 }) => {
   const [search, setSearch] = useState('');
   const [selectedGroup, setSelectedGroup] = useState<string>('all');
+  const [failedThumbs, setFailedThumbs] = useState<Record<string, boolean>>({});
 
   const filtered = exercises.filter((ex) => {
     const matchesSearch =
@@ -87,13 +88,17 @@ export const ExercisesLibraryView: React.FC<ExercisesLibraryViewProps> = ({
                 className="relative w-28 sm:w-32 flex-shrink-0 bg-[#0d0e14] block group overflow-hidden"
                 title="30-soniyalik YouTube Shorts'da ko'rish"
               >
-                {thumbnailUrl ? (
+                {thumbnailUrl && !failedThumbs[exercise.id] ? (
                   <>
-                    <img 
-                      src={thumbnailUrl} 
-                      alt={exercise.name} 
-                      className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all" 
-                      loading="lazy" 
+                    <img
+                      src={thumbnailUrl}
+                      alt={exercise.name}
+                      className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all"
+                      loading="lazy"
+                      decoding="async"
+                      onError={() =>
+                        setFailedThumbs((prev) => ({ ...prev, [exercise.id]: true }))
+                      }
                     />
                     <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/40 group-hover:bg-black/20 transition-colors">
                       <div className="w-8 h-8 rounded-full bg-red-600 flex items-center justify-center shadow-md">

@@ -1,13 +1,5 @@
-import { useState, useEffect, useRef } from 'react';
-import {
-  onAuthStateChanged,
-  signInWithPopup,
-  signInWithRedirect,
-  getRedirectResult,
-  signOut,
-  type User,
-} from 'firebase/auth';
-import { auth, googleProvider } from './lib/firebase';
+import { useState, useEffect, useRef, lazy, Suspense } from 'react';
+import type { User } from 'firebase/auth';
 import { applyThemeToDocument } from './data/themes';
 import type {
   WorkoutSession,
@@ -39,28 +31,40 @@ import {
   isCloudBannerDismissed,
   dismissCloudBanner,
 } from './utils/storage';
-import {
-  loadCloudData,
-  saveCloudData,
-  mergeCloudAndLocalData,
-  formatFirebaseErrorUz,
-} from './utils/cloudSync';
+import { loadFirebaseRuntime } from './utils/firebaseBridge';
 import { getExerciseRestInfo } from './utils/restTimer';
 
 import { Header } from './components/Header';
 import { Navbar } from './components/Navbar';
 import type { TabType } from './components/Navbar';
 import { WorkoutActive } from './components/WorkoutActive';
-import { ExerciseSelectorModal } from './components/ExerciseSelectorModal';
-import { TechniqueModal } from './components/TechniqueModal';
 import { RestTimer } from './components/RestTimerModal';
-import { WorkoutSummaryModal } from './components/WorkoutSummaryModal';
-import { ExercisesLibraryView } from './components/ExercisesLibraryView';
-import { HistoryView } from './components/HistoryView';
-import { TemplatesView } from './components/TemplatesView';
 import { InstallShortcutBanner } from './components/InstallShortcutBanner';
 import { CloudSyncBanner } from './components/CloudSyncBanner';
-import { AccountPersonalizationModal } from './components/AccountPersonalizationModal';
+
+const TemplatesView = lazy(() =>
+  import('./components/TemplatesView').then((m) => ({ default: m.TemplatesView }))
+);
+const ExercisesLibraryView = lazy(() =>
+  import('./components/ExercisesLibraryView').then((m) => ({ default: m.ExercisesLibraryView }))
+);
+const HistoryView = lazy(() =>
+  import('./components/HistoryView').then((m) => ({ default: m.HistoryView }))
+);
+const ExerciseSelectorModal = lazy(() =>
+  import('./components/ExerciseSelectorModal').then((m) => ({ default: m.ExerciseSelectorModal }))
+);
+const TechniqueModal = lazy(() =>
+  import('./components/TechniqueModal').then((m) => ({ default: m.TechniqueModal }))
+);
+const WorkoutSummaryModal = lazy(() =>
+  import('./components/WorkoutSummaryModal').then((m) => ({ default: m.WorkoutSummaryModal }))
+);
+const AccountPersonalizationModal = lazy(() =>
+  import('./components/AccountPersonalizationModal').then((m) => ({
+    default: m.AccountPersonalizationModal,
+  }))
+);
 
 export function App() {
   const [currentTab, setCurrentTab] = useState<TabType>('workout');
@@ -119,90 +123,119 @@ export function App() {
     preferences,
   });
 
-  // Check redirect login result & subscribe to Firebase Auth state
+  // Defer Firebase Auth subscription slightly after first paint so initial UI renders instantly
   useEffect(() => {
-    getRedirectResult(auth).catch((err) => {
-      const msg = formatFirebaseErrorUz(err);
-      if (msg) setAuthError(msg);
-    });
+    let cancelled = false;
+    let unsubscribeAuth: (() => void) | null = null;
 
-    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-      if (!firebaseUser) {
-        setUser(null);
-        setSyncStatus('idle');
-        lastCloudSnapshotRef.current = '';
-        return;
-      }
+    const timer = setTimeout(() => {
+      loadFirebaseRuntime()
+        .then(({ authMod, firebaseMod, cloudSyncMod }) => {
+          if (cancelled) return;
+          const { onAuthStateChanged, getRedirectResult } = authMod;
+          const { auth } = firebaseMod;
+          const { loadCloudData, saveCloudData, mergeCloudAndLocalData, formatFirebaseErrorUz } =
+            cloudSyncMod;
 
-      setUser(firebaseUser);
-      setAuthError(null);
-      setSyncStatus('syncing');
-      isHydratingRef.current = true;
+          getRedirectResult(auth).catch((err) => {
+            if (cancelled) return;
+            const msg = formatFirebaseErrorUz(err);
+            if (msg) setAuthError(msg);
+          });
 
-      try {
-        const cloudData = await loadCloudData(firebaseUser.uid);
-        const localSnapshot: CloudUserData = {
-          templates: getWorkoutTemplates(),
-          history: getWorkoutHistory(),
-          personalRecords: getPersonalRecords(),
-          customExercises: getCustomExercisesOnly(),
-          activeWorkout: getActiveWorkout(),
-          preferences: getUserPreferences(),
-          updatedAt: Date.now(),
-        };
+          unsubscribeAuth = onAuthStateChanged(auth, async (firebaseUser) => {
+            if (cancelled) return;
+            if (!firebaseUser) {
+              setUser(null);
+              setSyncStatus('idle');
+              lastCloudSnapshotRef.current = '';
+              return;
+            }
 
-        if (cloudData) {
-          const merged = mergeCloudAndLocalData(localSnapshot, cloudData);
+            setUser(firebaseUser);
+            setAuthError(null);
+            setSyncStatus('syncing');
+            isHydratingRef.current = true;
 
-          saveAllWorkoutTemplates(merged.templates);
-          saveWorkoutHistoryList(merged.history);
-          savePersonalRecordsMap(merged.personalRecords);
-          const mergedExercises = saveCustomExercisesList(merged.customExercises);
-          saveActiveWorkout(merged.activeWorkout);
-          saveUserPreferences(merged.preferences);
+            try {
+              const cloudData = await loadCloudData(firebaseUser.uid);
+              if (cancelled) return;
 
-          setTemplates(merged.templates);
-          setHistory(merged.history);
-          setPersonalRecords(merged.personalRecords);
-          setExercises(mergedExercises);
-          setActiveWorkout(merged.activeWorkout);
-          setPreferences(merged.preferences);
+              const localSnapshot: CloudUserData = {
+                templates: getWorkoutTemplates(),
+                history: getWorkoutHistory(),
+                personalRecords: getPersonalRecords(),
+                customExercises: getCustomExercisesOnly(),
+                activeWorkout: getActiveWorkout(),
+                preferences: getUserPreferences(),
+                updatedAt: Date.now(),
+              };
 
-          const mergedCore = {
-            templates: merged.templates,
-            history: merged.history,
-            personalRecords: merged.personalRecords,
-            customExercises: merged.customExercises,
-            activeWorkout: merged.activeWorkout,
-            preferences: merged.preferences,
-          };
-          lastCloudSnapshotRef.current = JSON.stringify(mergedCore);
-          await saveCloudData(firebaseUser.uid, merged);
-        } else {
-          const localCore = {
-            templates: localSnapshot.templates,
-            history: localSnapshot.history,
-            personalRecords: localSnapshot.personalRecords,
-            customExercises: localSnapshot.customExercises,
-            activeWorkout: localSnapshot.activeWorkout,
-            preferences: localSnapshot.preferences,
-          };
-          lastCloudSnapshotRef.current = JSON.stringify(localCore);
-          await saveCloudData(firebaseUser.uid, localSnapshot);
-        }
+              if (cloudData) {
+                const merged = mergeCloudAndLocalData(localSnapshot, cloudData);
 
-        setSyncStatus('synced');
-        setLastSyncedAt(Date.now());
-      } catch (err) {
-        setSyncStatus('error');
-        const msg = formatFirebaseErrorUz(err);
-        if (msg) setAuthError(msg);
-      } finally {
-        isHydratingRef.current = false;
-      }
-    });
+                saveAllWorkoutTemplates(merged.templates);
+                saveWorkoutHistoryList(merged.history);
+                savePersonalRecordsMap(merged.personalRecords);
+                const mergedExercises = saveCustomExercisesList(merged.customExercises);
+                saveActiveWorkout(merged.activeWorkout);
+                saveUserPreferences(merged.preferences);
 
-    return () => unsubscribe();
+                setTemplates(merged.templates);
+                setHistory(merged.history);
+                setPersonalRecords(merged.personalRecords);
+                setExercises(mergedExercises);
+                setActiveWorkout(merged.activeWorkout);
+                setPreferences(merged.preferences);
+
+                const mergedCore = {
+                  templates: merged.templates,
+                  history: merged.history,
+                  personalRecords: merged.personalRecords,
+                  customExercises: merged.customExercises,
+                  activeWorkout: merged.activeWorkout,
+                  preferences: merged.preferences,
+                };
+                lastCloudSnapshotRef.current = JSON.stringify(mergedCore);
+                await saveCloudData(firebaseUser.uid, merged);
+              } else {
+                const localCore = {
+                  templates: localSnapshot.templates,
+                  history: localSnapshot.history,
+                  personalRecords: localSnapshot.personalRecords,
+                  customExercises: localSnapshot.customExercises,
+                  activeWorkout: localSnapshot.activeWorkout,
+                  preferences: localSnapshot.preferences,
+                };
+                lastCloudSnapshotRef.current = JSON.stringify(localCore);
+                await saveCloudData(firebaseUser.uid, localSnapshot);
+              }
+
+              if (!cancelled) {
+                setSyncStatus('synced');
+                setLastSyncedAt(Date.now());
+              }
+            } catch (err) {
+              if (!cancelled) {
+                setSyncStatus('error');
+                const msg = formatFirebaseErrorUz(err);
+                if (msg) setAuthError(msg);
+              }
+            } finally {
+              isHydratingRef.current = false;
+            }
+          });
+        })
+        .catch(() => {
+          // Offline / blocked Firebase script: keep app fully functional offline
+        });
+    }, 150);
+
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+      if (unsubscribeAuth) unsubscribeAuth();
+    };
   }, []);
 
   // Debounced auto-sync whenever data changes while logged in
@@ -228,7 +261,8 @@ export function App() {
       if (!user || isHydratingRef.current) return;
       setSyncStatus('syncing');
       try {
-        await saveCloudData(user.uid, {
+        const { cloudSyncMod } = await loadFirebaseRuntime();
+        await cloudSyncMod.saveCloudData(user.uid, {
           ...coreSnapshot,
           updatedAt: Date.now(),
         });
@@ -237,7 +271,8 @@ export function App() {
         setLastSyncedAt(Date.now());
       } catch (err) {
         setSyncStatus('error');
-        const msg = formatFirebaseErrorUz(err);
+        const { cloudSyncMod } = await loadFirebaseRuntime();
+        const msg = cloudSyncMod.formatFirebaseErrorUz(err);
         if (msg) setAuthError(msg);
       }
     }, 700);
@@ -253,27 +288,32 @@ export function App() {
     setAuthLoading(true);
     setAuthError(null);
     try {
-      await signInWithPopup(auth, googleProvider);
-    } catch (err) {
-      const code =
-        typeof err === 'object' && err !== null && 'code' in err
-          ? String((err as { code?: unknown }).code || '')
-          : '';
-      if (
-        code === 'auth/popup-blocked' ||
-        code === 'auth/operation-not-supported-in-this-environment'
-      ) {
-        try {
-          await signInWithRedirect(auth, googleProvider);
-          return;
-        } catch (redirectErr) {
-          const msg = formatFirebaseErrorUz(redirectErr);
+      const { authMod, firebaseMod, cloudSyncMod } = await loadFirebaseRuntime();
+      try {
+        await authMod.signInWithPopup(firebaseMod.auth, firebaseMod.googleProvider);
+      } catch (err) {
+        const code =
+          typeof err === 'object' && err !== null && 'code' in err
+            ? String((err as { code?: unknown }).code || '')
+            : '';
+        if (
+          code === 'auth/popup-blocked' ||
+          code === 'auth/operation-not-supported-in-this-environment'
+        ) {
+          try {
+            await authMod.signInWithRedirect(firebaseMod.auth, firebaseMod.googleProvider);
+            return;
+          } catch (redirectErr) {
+            const msg = cloudSyncMod.formatFirebaseErrorUz(redirectErr);
+            if (msg) setAuthError(msg);
+          }
+        } else {
+          const msg = cloudSyncMod.formatFirebaseErrorUz(err);
           if (msg) setAuthError(msg);
         }
-      } else {
-        const msg = formatFirebaseErrorUz(err);
-        if (msg) setAuthError(msg);
       }
+    } catch {
+      setAuthError("Internet aloqasi yo'q. Tarmoqni tekshiring.");
     } finally {
       setAuthLoading(false);
     }
@@ -282,9 +322,11 @@ export function App() {
   const handleSignOut = async () => {
     setAuthError(null);
     try {
-      await signOut(auth);
+      const { authMod, firebaseMod } = await loadFirebaseRuntime();
+      await authMod.signOut(firebaseMod.auth);
     } catch (err) {
-      const msg = formatFirebaseErrorUz(err);
+      const { cloudSyncMod } = await loadFirebaseRuntime();
+      const msg = cloudSyncMod.formatFirebaseErrorUz(err);
       if (msg) setAuthError(msg);
     }
   };
@@ -295,7 +337,8 @@ export function App() {
     setAuthError(null);
     const coreSnapshot = buildCurrentCloudData();
     try {
-      await saveCloudData(user.uid, {
+      const { cloudSyncMod } = await loadFirebaseRuntime();
+      await cloudSyncMod.saveCloudData(user.uid, {
         ...coreSnapshot,
         updatedAt: Date.now(),
       });
@@ -304,7 +347,8 @@ export function App() {
       setLastSyncedAt(Date.now());
     } catch (err) {
       setSyncStatus('error');
-      const msg = formatFirebaseErrorUz(err);
+      const { cloudSyncMod } = await loadFirebaseRuntime();
+      const msg = cloudSyncMod.formatFirebaseErrorUz(err);
       if (msg) setAuthError(msg);
     }
   };
@@ -633,34 +677,42 @@ export function App() {
           />
         )}
 
-        {currentTab === 'templates' && (
-          <TemplatesView
-            templates={templates}
-            exercises={exercises}
-            onStartTemplate={handleStartTemplate}
-            onOpenTechnique={(ex) => setTechniqueExercise(ex)}
-            onUpdateTemplates={handleUpdateTemplates}
-            onOpenAddExerciseToDay={handleOpenAddExerciseToDay}
-          />
-        )}
+        {currentTab !== 'workout' && (
+          <Suspense
+            fallback={
+              <div className="py-12 text-center text-xs text-slate-500">Yuklanmoqda...</div>
+            }
+          >
+            {currentTab === 'templates' && (
+              <TemplatesView
+                templates={templates}
+                exercises={exercises}
+                onStartTemplate={handleStartTemplate}
+                onOpenTechnique={(ex) => setTechniqueExercise(ex)}
+                onUpdateTemplates={handleUpdateTemplates}
+                onOpenAddExerciseToDay={handleOpenAddExerciseToDay}
+              />
+            )}
 
-        {currentTab === 'exercises' && (
-          <ExercisesLibraryView
-            exercises={exercises}
-            onOpenTechnique={(ex) => setTechniqueExercise(ex)}
-            onSelectForWorkout={(ex) => handleAddExerciseToWorkout(ex)}
-          />
-        )}
+            {currentTab === 'exercises' && (
+              <ExercisesLibraryView
+                exercises={exercises}
+                onOpenTechnique={(ex) => setTechniqueExercise(ex)}
+                onSelectForWorkout={(ex) => handleAddExerciseToWorkout(ex)}
+              />
+            )}
 
-        {currentTab === 'history' && (
-          <HistoryView
-            history={history}
-            personalRecords={personalRecords}
-            onDeleteWorkout={handleDeleteWorkout}
-            weightUnit={preferences.weightUnit}
-            isSignedIn={!!user}
-            onOpenAccount={() => setIsAccountModalOpen(true)}
-          />
+            {currentTab === 'history' && (
+              <HistoryView
+                history={history}
+                personalRecords={personalRecords}
+                onDeleteWorkout={handleDeleteWorkout}
+                weightUnit={preferences.weightUnit}
+                isSignedIn={!!user}
+                onOpenAccount={() => setIsAccountModalOpen(true)}
+              />
+            )}
+          </Suspense>
         )}
       </main>
 
@@ -676,45 +728,55 @@ export function App() {
         onClose={() => setRestTimer((prev) => ({ ...prev, isOpen: false }))}
       />
 
-      {/* Modals */}
-      <ExerciseSelectorModal
-        isOpen={isSelectorOpen}
-        onClose={() => {
-          setIsSelectorOpen(false);
-          setTargetDayIdForExercise(null);
-        }}
-        exercises={exercises}
-        onSelectExercise={handleSelectExerciseFromModal}
-        onOpenTechnique={(ex) => setTechniqueExercise(ex)}
-        onAddNewCustomExercise={handleAddNewCustomExercise}
-      />
+      {/* Lazy Modals (only loaded when opened) */}
+      <Suspense fallback={null}>
+        {isSelectorOpen && (
+          <ExerciseSelectorModal
+            isOpen={isSelectorOpen}
+            onClose={() => {
+              setIsSelectorOpen(false);
+              setTargetDayIdForExercise(null);
+            }}
+            exercises={exercises}
+            onSelectExercise={handleSelectExerciseFromModal}
+            onOpenTechnique={(ex) => setTechniqueExercise(ex)}
+            onAddNewCustomExercise={handleAddNewCustomExercise}
+          />
+        )}
 
-      <TechniqueModal
-        exercise={techniqueExercise}
-        onClose={() => setTechniqueExercise(null)}
-      />
+        {techniqueExercise && (
+          <TechniqueModal
+            exercise={techniqueExercise}
+            onClose={() => setTechniqueExercise(null)}
+          />
+        )}
 
-      <WorkoutSummaryModal
-        session={finishedSession}
-        isOpen={!!finishedSession}
-        onSaveAndClose={handleSaveCompletedSession}
-        weightUnit={preferences.weightUnit}
-      />
+        {finishedSession && (
+          <WorkoutSummaryModal
+            session={finishedSession}
+            isOpen={!!finishedSession}
+            onSaveAndClose={handleSaveCompletedSession}
+            weightUnit={preferences.weightUnit}
+          />
+        )}
 
-      <AccountPersonalizationModal
-        isOpen={isAccountModalOpen}
-        onClose={() => setIsAccountModalOpen(false)}
-        user={user}
-        authLoading={authLoading}
-        authError={authError}
-        syncStatus={syncStatus}
-        lastSyncedAt={lastSyncedAt}
-        onSignInGoogle={handleSignInGoogle}
-        onSignOut={handleSignOut}
-        onManualSync={handleManualSync}
-        preferences={preferences}
-        onUpdatePreferences={handleUpdatePreferences}
-      />
+        {isAccountModalOpen && (
+          <AccountPersonalizationModal
+            isOpen={isAccountModalOpen}
+            onClose={() => setIsAccountModalOpen(false)}
+            user={user}
+            authLoading={authLoading}
+            authError={authError}
+            syncStatus={syncStatus}
+            lastSyncedAt={lastSyncedAt}
+            onSignInGoogle={handleSignInGoogle}
+            onSignOut={handleSignOut}
+            onManualSync={handleManualSync}
+            preferences={preferences}
+            onUpdatePreferences={handleUpdatePreferences}
+          />
+        )}
+      </Suspense>
 
       {/* Bottom Mobile Tab Bar */}
       <Navbar

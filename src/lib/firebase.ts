@@ -7,7 +7,6 @@ import {
   persistentMultipleTabManager,
   type Firestore,
 } from 'firebase/firestore';
-import { getAnalytics, isSupported } from 'firebase/analytics';
 
 const firebaseConfig = {
   apiKey: "AIzaSyDQhYFvqWbDjFU8zcEiY0jRvWv4bE7aNl0",
@@ -36,10 +35,3 @@ try {
 }
 
 export const db = firestoreDb;
-
-// Safe optional analytics initialization (never crashes on adblockers/restricted browsers)
-isSupported()
-  .then((ok) => {
-    if (ok) getAnalytics(firebaseApp);
-  })
-  .catch(() => {});
